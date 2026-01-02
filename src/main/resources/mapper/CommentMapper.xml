@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bird_forum.mapper.CommentMapper">
+    <resultMap id="commentVo" type="com.bird_forum.domain.vo.CommentVO">
+        <result column="id" property="id" />
+        <result column="context" property="context" />
+        <result column="article_id" property="articleId" />
+        <result column="comment_user_id" property="commentUserId" />
+        <result column="root_id" property="rootId" />
+        <result column="parent_id" property="parentId" />
+        <result column="status" property="status" />
+        <result column="like_num" property="likeNum" />
+        <result column="create_time" property="createTime" />
+        <result column="username" property="userName" />
+    </resultMap>
+
+    <sql id="getCommentVO">
+        select c.id, context, article_id, comment_user_id, root_id, parent_id, c.status, like_num, c.create_time, u.username
+        from comment as c left join user as u on c.comment_user_id = u.id
+    </sql>
+
+    <select id="getComments" resultMap="commentVo" parameterType="com.bird_forum.domain.query.CommentQuery">
+        <include refid="getCommentVO" />
+        <where>
+            <if test="articleId != null">
+                and article_id = #{articleId}
+            </if>
+            <if test="rootId != null">
+                and root_id = #{rootId}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by like_num desc, c.create_time desc
+    </select>
+</mapper>

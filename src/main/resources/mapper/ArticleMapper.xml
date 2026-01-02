@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bird_forum.mapper.ArticleMapper">
+    <resultMap id="article" type="com.bird_forum.domain.po.Article">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="context" property="context" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+    <select id="listArticles" resultMap="article"
+            parameterType="com.bird_forum.domain.query.ArticleQuery">
+        select a.id, a.title, a.context, a.create_time, a.update_time
+        from article as a left join article_category as c on a.id = c.article_id
+        <where>
+            <if test="title != null">
+                and a.title like concat('%', #{title}, '%')
+            </if>
+            <if test="context != null">
+                and a.context like concat('%', #{context}, '%')
+            </if>
+            <if test="articleCategoryId != null">
+                and c.article_category_id = #{articleCategoryId}
+            </if>
+        </where>
+    </select>
+</mapper>

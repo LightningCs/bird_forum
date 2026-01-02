@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bird_forum.mapper.HistoryMapper">
+
+    <select id="listHistory" resultType="com.bird_forum.domain.vo.HistoryVO">
+        select h.article_id, h.user_id, h.view_time, a.title, a.context, a.image, a.create_time
+        from history h left join article a on h.article_id = a.id
+        where h.user_id = id and a.status = '可见';
+    </select>
+</mapper>
