@@ -1,6 +1,7 @@
 package com.bird_forum.controller;
 
 
+import com.bird_forum.domain.query.PageQuery;
 import com.bird_forum.domain.vo.HistoryVO;
 import com.bird_forum.service.IHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,10 +37,10 @@ public class HistoryController {
      */
     @GetMapping
     @Operation(summary = "获取历史记录", description = "获取历史记录", method = "GET")
-    public List<HistoryVO> listHistory() {
+    public List<HistoryVO> listHistory(PageQuery query) {
         log.info("获取历史记录");
 
         // TODO 分页查询
-        return historyService.listHistory();
+        return historyService.listHistory(query);
     }
 }

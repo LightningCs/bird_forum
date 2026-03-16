@@ -4,15 +4,14 @@ package com.bird_forum.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.po.ArticleCategory;
+import com.bird_forum.domain.vo.CategoryVO;
 import com.bird_forum.service.IArticleCategoryService;
+import com.bird_forum.service.ICategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,7 +28,11 @@ import java.util.List;
 @Tag(name = "文章分类模块")
 @Slf4j
 public class ArticleCategoryController {
+    @Resource
     private IArticleCategoryService iArticleCategoryService;
+
+    @Resource
+    private ICategoryService iCategoryService;
 
     /**
      * 添加文章分类
@@ -117,7 +120,17 @@ public class ArticleCategoryController {
         return ResponseData.error();
     }
 
-    // TODO 改
+    /**
+     * 查询文章分类
+     *
+     * @param articleId 文章id
+     * @return 分类集合
+     */
+    @GetMapping("/{articleId}")
+    @Operation(summary = "查询文章分类", description = "查询文章分类", method = "GET")
+    public ResponseData<List<CategoryVO>> queryCategories(@PathVariable Long articleId) {
+        log.info("查询 ——> 文章: {}", articleId);
 
-    // TODO 查
+        return ResponseData.success(iCategoryService.list(articleId));
+    }
 }

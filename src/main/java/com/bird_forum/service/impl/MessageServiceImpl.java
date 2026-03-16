@@ -23,18 +23,23 @@ import java.util.List;
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> implements IMessageService {
 
     /**
-     * 消息列表
+     * 消息列表（两个用户之间的聊天记录）
      *
-     * @param messageQuery 查询参数
+     * @param messageQuery 查询参数（sourceId 和 targetId 为两个用户的id）
      * @return 消息列表
      */
     @Override
     public List<Message> list(MessageQuery messageQuery) {
         return lambdaQuery()
-                .eq(BeanUtils.isNotNull(messageQuery.getSourceId()), Message::getSourceId, messageQuery.getSourceId())
-                .eq(BeanUtils.isNotNull(messageQuery.getTargetId()), Message::getTargetId, messageQuery.getTargetId())
+                .and(BeanUtils.isNotNull(messageQuery.getSourceId()) && BeanUtils.isNotNull(messageQuery.getTargetId()),
+                        w -> w.and(q -> q.eq(Message::getSourceId, messageQuery.getSourceId())
+                                         .eq(Message::getTargetId, messageQuery.getTargetId()))
+                              .or(q -> q.eq(Message::getSourceId, messageQuery.getTargetId())
+                                        .eq(Message::getTargetId, messageQuery.getSourceId()))
+                )
                 .like(BeanUtils.isNotNull(messageQuery.getContent()), Message::getContent, messageQuery.getContent())
                 .eq(BeanUtils.isNotNull(messageQuery.getStatus()), Message::getStatus, messageQuery.getStatus())
+                .orderByAsc(Message::getSendTime)
                 .list(messageQuery.toPage());
     }
 }

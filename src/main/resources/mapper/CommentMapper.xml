@@ -9,29 +9,74 @@
         <result column="root_id" property="rootId" />
         <result column="parent_id" property="parentId" />
         <result column="status" property="status" />
+        <result column="is_illegal" property="isIllegal" />
         <result column="like_num" property="likeNum" />
         <result column="create_time" property="createTime" />
         <result column="username" property="userName" />
+        <result column="avatar" property="avatar" />
+        <result column="article_title" property="articleTitle" />
+        <result column="reply_user_id" property="replyUserId" />
+        <result column="reply_username" property="replyUserName" />
+        <result column="reply_avatar" property="replyAvatar" />
     </resultMap>
 
     <sql id="getCommentVO">
-        select c.id, context, article_id, comment_user_id, root_id, parent_id, c.status, like_num, c.create_time, u.username
+        select c.id, context, article_id, comment_user_id, root_id, parent_id, c.status, like_num, c.create_time, u.username, u.avatar
         from comment as c left join user as u on c.comment_user_id = u.id
     </sql>
 
-    <select id="getComments" resultMap="commentVo" parameterType="com.bird_forum.domain.query.CommentQuery">
-        <include refid="getCommentVO" />
+    <select id="listComments" resultMap="commentVo" parameterType="com.bird_forum.domain.query.CommentQuery">
+        select
+            c.id,
+            c.context,
+            c.article_id,
+            c.comment_user_id,
+            c.root_id,
+            c.parent_id,
+            c.status,
+            c.is_illegal,
+            c.like_num,
+            c.create_time,
+            u.username,
+            u.avatar,
+            a.title as article_title,
+            parent_comment.comment_user_id as reply_user_id,
+            reply_user.username as reply_username,
+            reply_user.avatar as reply_avatar
+        from comment as c
+        left join user as u on c.comment_user_id = u.id
+        left join article as a on c.article_id = a.id
+        left join comment as parent_comment on c.parent_id = parent_comment.id
+        left join user as reply_user on parent_comment.comment_user_id = reply_user.id
         <where>
             <if test="articleId != null">
-                and article_id = #{articleId}
+                and c.article_id = #{articleId}
             </if>
             <if test="rootId != null">
-                and root_id = #{rootId}
+                and c.root_id = #{rootId}
             </if>
             <if test="status != null and status != ''">
-                and status = #{status}
+                and c.status = #{status}
+            </if>
+            <if test="context != null and context != ''">
+                and c.context like concat('%', #{context}, '%')
+            </if>
+            <if test="username != null and username != ''">
+                and u.username like concat('%', #{username}, '%')
+            </if>
+            <if test="title != null and title != ''">
+                and a.title like concat('%', #{title}, '%')
+            </if>
+            <if test="isIllegal != null">
+                and c.is_illegal = #{isIllegal}
+            </if>
+            <if test="startTime != null">
+                and c.create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                and c.create_time &lt;= #{endTime}
             </if>
         </where>
-        order by like_num desc, c.create_time desc
+        order by c.like_num desc, c.create_time desc
     </select>
 </mapper>

@@ -14,14 +14,11 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @Schema(description = "文章分页查询参数")
 public class ArticleQuery extends PageQuery{
-    @Schema(description = "文章标题")
-    private String title;
+    @Schema(description = "关键字")
+    private String keyword;
 
-    @Schema(description = "文章内容")
-    private String context;
-
-    @Schema(description = "文章分类ID")
-    private Long articleCategoryId;
+    @Schema(description = "文章分类")
+    private String category;
 
     @Schema(description = "类型 1点赞 2收藏")
     private Integer type;

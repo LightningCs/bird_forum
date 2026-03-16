@@ -4,6 +4,7 @@ import com.bird_forum.domain.dto.CategoryDTO;
 import com.bird_forum.domain.po.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bird_forum.domain.query.CategoryQuery;
+import com.bird_forum.domain.vo.CategoryVO;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public interface ICategoryService extends IService<Category> {
     /**
      * 添加分类
+     *
      * @param categoryDTO 分类参数
      * @return 是否添加成功
      */
@@ -25,6 +27,7 @@ public interface ICategoryService extends IService<Category> {
 
     /**
      * 更新分类
+     *
      * @param categoryDTO 分类参数
      * @return 是否更新成功
      */
@@ -32,8 +35,18 @@ public interface ICategoryService extends IService<Category> {
 
     /**
      * 获取分类集合
+     *
      * @param categoryQuery 查询参数
      * @return 分类集合
      */
-    List<Category> list(CategoryQuery categoryQuery);
+    List<CategoryVO> list(CategoryQuery categoryQuery);
+
+    /**
+     * 获取分类
+     *
+     * @param articleId 文章id
+     * @return 分类数量
+     */
+    List<CategoryVO> list(Long articleId);
+
 }

@@ -41,4 +41,12 @@ public interface ICommentService extends IService<Comment> {
      * @return 修改结果
      */
     boolean update(CommentDTO commentDTO);
+
+    /**
+     * 增加评论点赞数量
+     *
+     * @param commentId 评论id
+     * @return
+     */
+    boolean plusLikeNum(Long commentId, int num);
 }

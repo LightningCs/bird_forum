@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 
@@ -23,6 +24,9 @@ public class CategoryDTO implements Serializable {
 
     @Schema(description = "分类名称")
     private String name;
+
+    @Schema(description = "图标")
+    private MultipartFile icon;
 
     @Schema(description = "状态")
     private String status;

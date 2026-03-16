@@ -40,11 +40,14 @@ public class ArticleLikeCollectionController {
     public ResponseData likeCollection(@PathVariable Long articleId, @PathVariable Integer type) {
         log.info("添加: {}, 类型: {}", articleId, type);
 
-        if (iArticleLikeCollectionService.save(new ArticleLikeCollection(articleId, ThreadContext.get(), type))) {
-            return ResponseData.success();
+        if (!iArticleLikeCollectionService.save(new ArticleLikeCollection(articleId, ThreadContext.get(), type))) {
+            // 已存在则删除
+            iArticleLikeCollectionService.remove(new LambdaQueryWrapper<ArticleLikeCollection>()
+                    .eq(ArticleLikeCollection::getArticleId, articleId)
+                    .eq(ArticleLikeCollection::getUserId, ThreadContext.get())
+                    .eq(ArticleLikeCollection::getType, type));
         }
-
-        return ResponseData.error();
+        return ResponseData.success();
     }
 
     /**

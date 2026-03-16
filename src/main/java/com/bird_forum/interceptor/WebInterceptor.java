@@ -10,7 +10,7 @@ public class WebInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 获取token
-        String token = request.getHeader("token");
+        String token = request.getHeader("Authorization");
 
         // 根据token获取id
         try {

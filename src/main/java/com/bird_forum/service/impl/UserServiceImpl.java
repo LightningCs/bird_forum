@@ -1,6 +1,7 @@
 package com.bird_forum.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -19,6 +20,7 @@ import com.bird_forum.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird_forum.util.EncryptUtils;
 import com.bird_forum.util.JWTUtils;
+import com.bird_forum.util.MinioUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ import java.util.List;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     private final UserMapper userMapper;
+    private final FollowMapper followMapper;
 
     @Override
     public String login(UserDTO userDTO) {
@@ -46,12 +49,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (account == null || password == null)
             throw new UserInfoException(MessageContext.ACCOUNT_PASSWORD_NULL);
 
-        try {
-            // 密码加密
-            password = EncryptUtils.md5(password);
-        } catch (Exception e) {
-            throw new RuntimeException("加密失败");
-        }
+//        try {
+//            // 密码加密
+//            password = EncryptUtils.md5(password);
+//        } catch (Exception e) {
+//            throw new RuntimeException("加密失败");
+//        }
 
         // 根据账号密码查询用户信息
         User user = lambdaQuery()
@@ -85,6 +88,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         if (!userDTO.getPassword().matches(FormatContext.PASSWORD_FORMAT)) {
             throw new UserInfoException(MessageContext.PASSWORD_FORMAT_ERROR);
+        }
+
+        try {
+            userDTO.setPassword(EncryptUtils.md5(userDTO.getPassword()));
+        } catch (Exception e) {
+            throw new RuntimeException("加密失败");
         }
 
         // 用户注册
@@ -154,20 +163,80 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     /**
-     * 获取粉丝列表
-     * @return 粉丝列表
+     * 获取粉丝或关注者
+     *
+     * @param userId 用户id
+     * @param isFans 是否是粉丝
+     * @return 粉丝或关注者
      */
     @Override
-    public List<UserVO> listFans() {
-        return userMapper.listFans(ThreadContext.get());
+    public List<UserVO> getFansOrFollowers(Long userId, Boolean isFans) {
+        // 为空则查询当前用户的粉丝或关注者
+        if (ObjectUtil.isNull(userId)) {
+            userId = ThreadContext.get();
+        }
+
+        List<UserVO> users = userMapper.getFansOrFollowers(userId, isFans);
+
+        // 获取当前登录用户ID，用于判断是否已关注
+        Long currentUserId = ThreadContext.get();
+
+        users.forEach(userVO -> {
+            // 当前用户自己则为null
+            if (ObjectUtil.isNotNull(currentUserId) && currentUserId.equals(userVO.getId())) {
+                userVO.setIsFollowed(null);
+            } else if (ObjectUtil.isNotNull(currentUserId)) {
+                long count = followMapper.selectCount(new LambdaQueryWrapper<Follow>()
+                        .eq(Follow::getFollowerId, currentUserId)
+                        .eq(Follow::getTargetId, userVO.getId()));
+                userVO.setIsFollowed(count > 0);
+            } else {
+                userVO.setIsFollowed(false);
+            }
+        });
+
+        return users;
     }
 
     /**
-     * 获取关注列表
-     * @return 关注列表
+     * 获取用户详情
+     *
+     * @param userId 用户id
+     * @return 用户详情
      */
     @Override
-    public List<UserVO> listFollowers() {
-        return userMapper.listFollowers(ThreadContext.get());
+    public UserVO getUserDetail(Long userId) {
+        // 查询用户基本信息
+        User user = getById(userId);
+        if (user == null) {
+            throw new UserInfoException(MessageContext.USER_NOT_EXIST);
+        }
+
+        UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
+
+        // 获取当前登录用户ID
+        Long currentUserId = ThreadContext.get();
+
+        // 如果是当前用户，isFollowed为null
+        if (ObjectUtil.isNotNull(currentUserId) && currentUserId.equals(userId)) {
+            userVO.setIsFollowed(null);
+        } else if (ObjectUtil.isNotNull(currentUserId)) {
+            // 查询当前用户是否关注了该用户
+            long count = followMapper.selectCount(new LambdaQueryWrapper<Follow>()
+                    .eq(Follow::getFollowerId, currentUserId)
+                    .eq(Follow::getTargetId, userId));
+            userVO.setIsFollowed(count > 0);
+        } else {
+            // 未登录用户
+            userVO.setIsFollowed(false);
+        }
+
+        // 查询粉丝数量
+        long fansCount = followMapper.selectCount(new LambdaQueryWrapper<Follow>()
+                .eq(Follow::getTargetId, userId));
+        userVO.setFansCount(fansCount);
+        userVO.setAvatar(MinioUtils.getFileUrl(user.getAvatar()));
+
+        return userVO;
     }
 }

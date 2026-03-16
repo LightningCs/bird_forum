@@ -2,6 +2,7 @@ package com.bird_forum.service.impl;
 
 import com.bird_forum.context.ThreadContext;
 import com.bird_forum.domain.po.History;
+import com.bird_forum.domain.query.PageQuery;
 import com.bird_forum.domain.vo.HistoryVO;
 import com.bird_forum.mapper.HistoryMapper;
 import com.bird_forum.service.IHistoryService;
@@ -31,7 +32,7 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
      * @return 历史记录
      */
     @Override
-    public List<HistoryVO> listHistory() {
+    public List<HistoryVO> listHistory(PageQuery query) {
         Long id = ThreadContext.get();
 
         return historyMapper.listHistory(id);

@@ -62,7 +62,6 @@ public class CommentController {
     @Operation(summary = "获取文章的评论", description = "获取文章的评论", method = "GET")
     public ResponseData<List<CommentVO>> getComments(CommentQuery commentQuery) {
         log.info("获取文章的评论:{}", commentQuery);
-        // TODO 分页查询
 
         // 获取当前文章的所有评论
         return ResponseData.success(iCommentService.getComments(commentQuery));

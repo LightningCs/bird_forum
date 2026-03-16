@@ -37,6 +37,22 @@ public class UserVO {
     @Schema(description = "状态")
     private String status;
 
+    @Schema(description = "粉丝数量")
+    private Long fansCount;
+
+    @Schema(description = "是否关注（当前用户为null，其他用户为boolean）")
+    private Boolean isFollowed;
+
+    @Schema(description = "最后一条消息内容")
+    private String lastMessage;
+
+    @Schema(description = "最后一条消息时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime lastMessageTime;
+
+    @Schema(description = "未读消息数量")
+    private Long unreadCount;
+
     // 设置时间格式
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;

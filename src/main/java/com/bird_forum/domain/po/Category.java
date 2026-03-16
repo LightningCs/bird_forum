@@ -36,6 +36,9 @@ public class Category implements Serializable {
     @Schema(description = "分类名称")
     private String name;
 
+    @Schema(description = "图标")
+    private String icon;
+
     @Schema(description = "状态")
     private String status;
 

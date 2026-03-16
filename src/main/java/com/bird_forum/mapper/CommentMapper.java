@@ -18,6 +18,10 @@ import java.util.List;
  */
 @Mapper
 public interface CommentMapper extends BaseMapper<Comment> {
-
-    List<CommentVO> getComments(CommentQuery commentQuery);
+    /**
+     * 获取评论列表（包含用户信息）
+     * @param commentQuery 查询参数
+     * @return 评论列表
+     */
+    List<CommentVO> listComments(CommentQuery commentQuery);
 }

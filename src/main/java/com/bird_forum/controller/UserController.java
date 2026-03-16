@@ -127,24 +127,16 @@ public class UserController {
     }
 
     /**
-     * 查询粉丝
+     * 获取用户详情
+     * @param userId 用户id
      * @return 响应数据
      */
-    @GetMapping("/fans")
-    @Operation(summary = "查询用户粉丝", description = "查询用户粉丝", method = "GET")
-    public ResponseData<List<UserVO>> fans() {
-        // 获取粉丝列表
-        return ResponseData.success(userService.listFans());
+    @GetMapping("/{userId}")
+    @Operation(summary = "获取用户详情", description = "获取用户详情", method = "GET")
+    public ResponseData<UserVO> getUserDetail(@PathVariable Long userId) {
+        log.info("获取用户详情, userId:{}", userId);
+
+        return ResponseData.success(userService.getUserDetail(userId));
     }
 
-    /**
-     * 查询关注
-     * @return 响应数据
-     */
-    @GetMapping("/followers")
-    @Operation(summary = "查询用户关注者", description = "查询用户关注者", method = "GET")
-    public ResponseData<List<UserVO>> followers() {
-        // 获取关注者列表
-        return ResponseData.success(userService.listFollowers());
-    }
 }

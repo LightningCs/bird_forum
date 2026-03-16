@@ -10,6 +10,9 @@
         <result property="message" column="message"/>
         <result property="status" column="status"/>
         <result property="createTime" column="create_time"/>
+        <result property="lastMessage" column="last_message"/>
+        <result property="lastMessageTime" column="last_message_time"/>
+        <result property="unreadCount" column="unread_count"/>
     </resultMap>
 
     <sql id="userFollowVO">
@@ -35,5 +38,29 @@
                 and f.follower_id = #{followerId}
             </if>
         </where>
+    </select>
+    <select id="getFansOrFollowers" resultMap="userVO">
+        select u.id, u.username, u.account, u.sex, u.avatar, u.message, u.status, u.create_time,
+               last_msg.content as last_message,
+               last_msg.send_time as last_message_time,
+               sum(case when m.status = '未读' and m.target_id = #{userId} and m.source_id = u.id then 1 else 0 end) as unread_count
+        from user as u
+        <if test="isFans">
+            inner join follow as f on u.id = f.follower_id and f.target_id = #{userId}
+        </if>
+        <if test="!isFans">
+            inner join follow as f on u.id = f.target_id and f.follower_id = #{userId}
+        </if>
+        left join message m on (m.source_id = #{userId} and m.target_id = u.id)
+                             or (m.source_id = u.id and m.target_id = #{userId})
+        left join (
+            select if(source_id = #{userId}, target_id, source_id) as partner_id,
+                   content, send_time
+            from message
+            where source_id = #{userId} or target_id = #{userId}
+            order by send_time desc
+        ) as last_msg on last_msg.partner_id = u.id
+        group by u.id, u.username, u.account, u.sex, u.avatar, u.message, u.status, u.create_time,
+                 last_msg.content, last_msg.send_time
     </select>
 </mapper>

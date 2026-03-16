@@ -4,6 +4,7 @@ package com.bird_forum.controller;
 import com.bird_forum.context.ThreadContext;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.service.ICommentLikeService;
+import com.bird_forum.service.ICommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -26,6 +27,9 @@ public class CommentLikeController {
     @Resource
     private ICommentLikeService iCommentLikeService;
 
+    @Resource
+    private ICommentService iCommentService;
+
     /**
      * 添加评论点赞
      *
@@ -38,7 +42,7 @@ public class CommentLikeController {
         log.info("添加评论点赞: {}", commentId);
 
         if (iCommentLikeService.like(ThreadContext.get(), commentId)) {
-            // TODO 评论点赞数量+1
+            iCommentService.plusLikeNum(commentId, 1);
 
             return ResponseData.success();
         }
@@ -58,7 +62,7 @@ public class CommentLikeController {
         log.info("删除评论点赞: {}", commentId);
 
         if (iCommentLikeService.dislike(ThreadContext.get(), commentId)) {
-            // TODO 评论点赞数量-1
+            iCommentService.plusLikeNum(commentId, -1);
 
             return ResponseData.success();
         }

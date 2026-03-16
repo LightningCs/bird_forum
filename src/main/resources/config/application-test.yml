@@ -1,0 +1,55 @@
+spring:
+  datasource:
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:151486}
+    url: jdbc:mysql://${MYSQL_ADDRESS:127.0.0.1:3306}/bird_forum?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # ===== 模型设置 =====
+  ai:
+    openai:
+      api-key:
+      base-url:
+      chat:
+        options:
+          model:
+
+logging:
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+
+mybatis-plus:
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+    # 打印 sql 语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.bird_forum.domain
+
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.bird_forum.controller
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# 其他服务配置
+bird-forum:
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://127.0.0.1:9000}
+    username: ${MINIO_USERNAME:admin}
+    password: ${MINIO_PASSWORD:151486_csh}
+    bucket-name: ${MINIO_BUCKET_NAME:bird-forum}

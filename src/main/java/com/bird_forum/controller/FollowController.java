@@ -5,12 +5,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bird_forum.context.ThreadContext;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.po.Follow;
+import com.bird_forum.domain.po.User;
+import com.bird_forum.domain.vo.UserVO;
 import com.bird_forum.service.IFollowService;
+import com.bird_forum.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -26,6 +31,9 @@ import org.springframework.web.bind.annotation.*;
 public class FollowController {
     @Resource
     private IFollowService followService;
+
+    @Resource
+    private IUserService userService;
 
     /**
      * 关注用户
@@ -70,5 +78,17 @@ public class FollowController {
         return ResponseData.error();
     }
 
-    // TODO 获取粉丝或关注者
+    /**
+     * 获取粉丝或关注者
+     *
+     * @param userId   用户id
+     * @param isFans   是否获取粉丝
+     * @return 粉丝或关注者列表
+     */
+    @GetMapping
+    @Operation(summary = "获取粉丝或关注者", description = "获取粉丝或关注者", method = "GET")
+    public ResponseData<List<UserVO>> getFansOrFollowers(@Schema(description = "用户id") Long userId,
+                                                         @Schema(description = "是否获取粉丝") Boolean isFans) {
+        return ResponseData.success(userService.getFansOrFollowers(userId, isFans));
+    }
 }

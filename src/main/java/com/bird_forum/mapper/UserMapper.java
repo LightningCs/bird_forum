@@ -30,4 +30,13 @@ public interface UserMapper extends BaseMapper<User> {
      * @return 关注列表
      */
     List<UserVO> listFollowers(Long targetId);
+
+    /**
+     * 获取粉丝或关注者
+     *
+     * @param userId 用户id
+     * @param isFans 是否是粉丝
+     * @return 粉丝或关注者
+     */
+    List<UserVO> getFansOrFollowers(Long userId, Boolean isFans);
 }

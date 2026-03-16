@@ -8,20 +8,47 @@
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
     </resultMap>
-    <select id="listArticles" resultMap="article"
+    <select id="listArticles" resultType="com.bird_forum.domain.vo.ArticleVO"
             parameterType="com.bird_forum.domain.query.ArticleQuery">
-        select a.id, a.title, a.context, a.create_time, a.update_time
-        from article as a left join article_category as c on a.id = c.article_id
+        select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.like_num, a.create_time, a.update_time
+        from article as a left join user as u on a.publisher_id = u.id left join article_category as ac on a.id = ac.article_id left join category as c on ac.category_id = c.id
         <where>
-            <if test="title != null">
-                and a.title like concat('%', #{title}, '%')
+            <if test="keyword != null and keyword !=''">
+                and a.title like concat('%', #{keyword}, '%')
             </if>
-            <if test="context != null">
-                and a.context like concat('%', #{context}, '%')
+            <if test="keyword != null">
+                and a.context like concat('%', #{keyword}, '%')
             </if>
-            <if test="articleCategoryId != null">
-                and c.article_category_id = #{articleCategoryId}
+            <if test="category != null">
+                and c.name like concat('%', #{category}, '%')
             </if>
         </where>
+    </select>
+    <select id="listHotArticleList" resultType="com.bird_forum.domain.vo.ArticleVO">
+        select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.like_num, a.create_time, a.update_time
+        from article as a left join user as u on a.publisher_id = u.id left join article_views as v on a.id = v.article_id
+        order by v.view_count, a.create_time desc
+        limit 10
+    </select>
+    <select id="getById" resultType="com.bird_forum.domain.vo.ArticleVO">
+        select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.like_num, a.create_time, a.update_time
+        from article as a left join user as u on a.publisher_id = u.id left join article_views as v on a.id = v.article_id
+        <where>
+            a.id = #{id}
+        </where>
+    </select>
+    <select id="listByPublisher" resultType="com.bird_forum.domain.vo.ArticleVO">
+        select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.like_num, a.create_time, a.update_time
+        from article as a left join user as u on a.publisher_id = u.id
+        where a.publisher_id = #{userId}
+        order by a.create_time desc
+    </select>
+    <select id="listCollected" resultType="com.bird_forum.domain.vo.ArticleVO">
+        select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.like_num, a.create_time, a.update_time
+        from article as a
+        left join user as u on a.publisher_id = u.id
+        inner join article_like_collection as alc on a.id = alc.article_id
+        where alc.user_id = #{userId} and alc.type = 2
+        order by a.create_time desc
     </select>
 </mapper>

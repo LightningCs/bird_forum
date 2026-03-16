@@ -7,7 +7,7 @@ import lombok.Data;
 @Schema(description = "响应数据")
 public class ResponseData<E> {
     @Schema(description = "状态码")
-    String code;
+    Integer code;
 
     @Schema(description = "响应信息")
     String message;
@@ -21,7 +21,7 @@ public class ResponseData<E> {
      * @return 响应数据
      */
     public static <E> ResponseData<E> success() {
-        return init("200", "操作成功!", null);
+        return init(200, "操作成功!", null);
     }
 
     /**
@@ -31,7 +31,7 @@ public class ResponseData<E> {
      * @return 响应数据
      */
     public static <E> ResponseData<E> success(E data) {
-        return init("200", "操作成功!", data);
+        return init(200, "操作成功!", data);
     }
 
     /**
@@ -41,7 +41,7 @@ public class ResponseData<E> {
      * @return 响应数据
      */
     public static <E> ResponseData<E> success(String message) {
-        return init("200", message, null);
+        return init(200, message, null);
     }
 
     /**
@@ -50,7 +50,7 @@ public class ResponseData<E> {
      * @return 响应数据
      */
     public static <E> ResponseData<E> error() {
-        return init("500", "操作失败!", null);
+        return init(500, "操作失败!", null);
     }
 
     /**
@@ -60,7 +60,7 @@ public class ResponseData<E> {
      * @return 响应数据
      */
     public static <E> ResponseData<E> error(E data) {
-        return init("500", "操作失败!", data);
+        return init(500, "操作失败!", data);
     }
 
     /**
@@ -70,7 +70,7 @@ public class ResponseData<E> {
      * @return 响应数据
      */
     public static <E> ResponseData<E> error(String message) {
-        return init("500", message, null);
+        return init(500, message, null);
     }
 
     /**
@@ -91,7 +91,7 @@ public class ResponseData<E> {
      * @param data 响应数据
      * @return 响应数据
      */
-    private static  <E> ResponseData<E> init(String code, String message, E data) {
+    private static  <E> ResponseData<E> init(Integer code, String message, E data) {
         ResponseData<E> responseData = new ResponseData<>();
         responseData.setCode(code);
         responseData.setMessage(message);

@@ -51,6 +51,9 @@ public class Comment implements Serializable {
     @Schema(description = "状态")
     private String status;
 
+    @Schema(description = "是否违规")
+    private Boolean isIllegal;
+
     @Schema(description = "点赞数")
     private Long likeNum;
 

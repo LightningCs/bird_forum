@@ -5,6 +5,7 @@ import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.dto.CategoryDTO;
 import com.bird_forum.domain.po.Category;
 import com.bird_forum.domain.query.CategoryQuery;
+import com.bird_forum.domain.vo.CategoryVO;
 import com.bird_forum.service.ICategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -106,7 +107,7 @@ public class CategoryController {
      */
     @GetMapping("/list")
     @Operation(summary = "获取分类列表", description = "获取分类列表", method = "GET")
-    public ResponseData<List<Category>> listCategory(CategoryQuery categoryQuery) {
+    public ResponseData<List<CategoryVO>> listCategory(CategoryQuery categoryQuery) {
         return ResponseData.success(iCategoryService.list(categoryQuery));
     }
 }
