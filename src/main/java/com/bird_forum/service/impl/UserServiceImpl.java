@@ -24,7 +24,10 @@ import com.bird_forum.util.MinioUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -182,6 +185,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         Long currentUserId = ThreadContext.get();
 
         users.forEach(userVO -> {
+            userVO.setAvatar(MinioUtils.getFileUrl(userVO.getAvatar()));
             // 当前用户自己则为null
             if (ObjectUtil.isNotNull(currentUserId) && currentUserId.equals(userVO.getId())) {
                 userVO.setIsFollowed(null);
@@ -194,6 +198,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 userVO.setIsFollowed(false);
             }
         });
+
+        users = new ArrayList<>(users.stream()
+                .sorted((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()))
+                .collect(Collectors.toMap(UserVO::getId, o -> o, (o1, o2) -> o1))
+                .values());
 
         return users;
     }

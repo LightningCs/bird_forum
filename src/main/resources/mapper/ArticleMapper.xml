@@ -10,7 +10,7 @@
     </resultMap>
     <select id="listArticles" resultType="com.bird_forum.domain.vo.ArticleVO"
             parameterType="com.bird_forum.domain.query.ArticleQuery">
-        select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.like_num, a.create_time, a.update_time
+        select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.is_illegal as `is_illegal`, a.like_num, a.create_time, a.update_time
         from article as a left join user as u on a.publisher_id = u.id left join article_category as ac on a.id = ac.article_id left join category as c on ac.category_id = c.id
         <where>
             <if test="keyword != null and keyword !=''">
