@@ -22,6 +22,9 @@ public class CommentQuery extends PageQuery {
     @Schema(description = "文章id")
     private Long articleId;
 
+    @Schema(description = "用户id")
+    private Long userId;
+
     @Schema(description = "根评论id")
     private Long rootId;
 

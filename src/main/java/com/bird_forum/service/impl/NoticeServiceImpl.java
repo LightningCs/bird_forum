@@ -58,7 +58,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice>
             
             // 构建通知ID到已读状态的映射
             Map<Long, String> readMap = noticeReads.stream()
-                .collect(Collectors.toMap(NoticeRead::getNoticeId, NoticeRead::getIsRead));
+                .collect(Collectors.toMap(NoticeRead::getNoticeId, NoticeRead::getIsRead, (o1, o2) -> o1));
             
             // 设置已读状态
             voPage.getRecords().forEach(vo -> {

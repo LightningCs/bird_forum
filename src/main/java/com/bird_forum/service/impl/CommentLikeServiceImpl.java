@@ -44,7 +44,7 @@ public class CommentLikeServiceImpl extends ServiceImpl<CommentLikeMapper, Comme
      */
     @Override
     public boolean like(Long userId, Long commentId) {
-        return save(new CommentLike(userId, commentId));
+        return save(new CommentLike(commentId, userId));
     }
 
     /**

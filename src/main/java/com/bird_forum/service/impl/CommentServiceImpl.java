@@ -71,7 +71,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                 if (commentVO.getReplyAvatar() != null) {
                     commentVO.setReplyAvatar(MinioUtils.getFileUrl(commentVO.getReplyAvatar()));
                 }
-                commentVO.setIsLike(iCommentLikeService.isLike(commentVO.getId(), ThreadContext.get()));
+                commentVO.setIsLike(iCommentLikeService.isLike(commentVO.getId(), commentQuery.getUserId()));
             });
 
             return data;
@@ -86,7 +86,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             if (commentVO.getReplyAvatar() != null) {
                 commentVO.setReplyAvatar(MinioUtils.getFileUrl(commentVO.getReplyAvatar()));
             }
-            commentVO.setIsLike(iCommentLikeService.isLike(commentVO.getId(), ThreadContext.get()));
+            commentVO.setIsLike(iCommentLikeService.isLike(commentVO.getId(), commentQuery.getUserId()));
         });
 
         // 构建树形结构

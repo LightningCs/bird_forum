@@ -43,7 +43,7 @@
     <select id="listHotArticleList" resultType="com.bird_forum.domain.vo.ArticleVO">
         select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.like_num, a.create_time, a.update_time
         from article as a left join user as u on a.publisher_id = u.id left join article_views as v on a.id = v.article_id
-        order by v.view_count, a.create_time desc
+        order by v.view_count desc
         limit 10
     </select>
     <select id="getById" resultType="com.bird_forum.domain.vo.ArticleVO">

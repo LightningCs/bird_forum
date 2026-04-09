@@ -36,12 +36,12 @@ public class CommentLikeController {
      * @param commentId 评论id
      * @return 响应数据
      */
-    @PostMapping("/{commentId}")
+    @PostMapping("/{commentId}/{userId}")
     @Operation(summary = "添加评论点赞", description = "添加评论点赞", method = "POST")
-    public ResponseData like(@PathVariable Long commentId) {
+    public ResponseData like(@PathVariable Long commentId, @PathVariable Long userId) {
         log.info("添加评论点赞: {}", commentId);
 
-        if (iCommentLikeService.like(ThreadContext.get(), commentId)) {
+        if (iCommentLikeService.like(userId, commentId)) {
             iCommentService.plusLikeNum(commentId, 1);
 
             return ResponseData.success();
@@ -56,12 +56,12 @@ public class CommentLikeController {
      * @param commentId 评论id
      * @return 响应数据
      */
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/{commentId}/{userId}")
     @Operation(summary = "删除评论点赞", description = "删除评论点赞", method = "DELETE")
-    public ResponseData dislike(@PathVariable Long commentId) {
+    public ResponseData dislike(@PathVariable Long commentId, @PathVariable Long userId) {
         log.info("删除评论点赞: {}", commentId);
 
-        if (iCommentLikeService.dislike(ThreadContext.get(), commentId)) {
+        if (iCommentLikeService.dislike(userId, commentId)) {
             iCommentService.plusLikeNum(commentId, -1);
 
             return ResponseData.success();

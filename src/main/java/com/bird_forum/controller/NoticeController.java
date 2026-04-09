@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 通知控制器
@@ -54,7 +55,16 @@ public class NoticeController {
             noticeQuery.getIsRead()
         );
         
-        return ResponseData.success(voPage.getRecords());
+        return ResponseData.success(voPage.getRecords().stream()
+                .sorted((o1, o2) -> {
+                    // 未读的排前面
+                    if (o1.getIsRead().equals("是")) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                })
+                .collect(Collectors.toList()));
     }
     
     /**

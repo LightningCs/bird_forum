@@ -40,7 +40,8 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
     @Override
     public List<HistoryVO> listHistory(HistoryQuery query) {
         List<HistoryVO> histories = BeanUtil.copyToList(list(new LambdaQueryWrapper<History>()
-                .eq(History::getUserId, query.getUserId())), HistoryVO.class);
+                .eq(History::getUserId, query.getUserId())
+                .orderByDesc(History::getViewTime)), HistoryVO.class);
 
         histories.forEach(hisStory -> {
             hisStory.setArticle(iArticleService.getById(hisStory.getArticleId()));

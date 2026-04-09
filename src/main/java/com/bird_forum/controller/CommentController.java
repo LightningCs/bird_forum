@@ -45,7 +45,6 @@ public class CommentController {
     @Operation(summary = "添加评论", description = "添加评论", method = "POST")
     public ResponseData addComment(@RequestBody CommentDTO commentDTO) {
         log.info("添加评论:{}", commentDTO);
-        commentDTO.setCommentUserId(ThreadContext.get());
 
         // 添加评论成功
         if (iCommentService.addComment(commentDTO)) {
