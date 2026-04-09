@@ -30,6 +30,9 @@ public class ManagerDTO implements Serializable {
     @Schema(description = "管理员密码")
     private String password;
 
+    @Schema(description = "管理员身份")
+    private String identity;
+
     @Schema(description = "管理员状态")
     private String status;
 }

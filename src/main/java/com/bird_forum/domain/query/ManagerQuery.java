@@ -17,8 +17,8 @@ public class ManagerQuery extends PageQuery {
     @Schema(description = "管理员名称")
     private String name;
 
-    @Schema(description = "管理员账号")
-    private String account;
+    @Schema(description = "管理员身份")
+    private Integer identity;
 
     @Schema(description = "管理员状态")
     private String status;

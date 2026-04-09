@@ -45,6 +45,9 @@ public class Article implements Serializable {
     @Schema(description = "图片")
     private String image;
 
+    @Schema(description = "是否违规(0-不违规, 1-违规)")
+    private Integer isIllegal;
+
     @Schema(description = "状态")
     private String status;
 

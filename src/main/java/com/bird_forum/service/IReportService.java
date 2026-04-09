@@ -3,6 +3,7 @@ package com.bird_forum.service;
 import com.bird_forum.domain.po.Report;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bird_forum.domain.query.ReportQuery;
+import com.bird_forum.domain.vo.ReportVO;
 
 import java.util.List;
 
@@ -20,5 +21,9 @@ public interface IReportService extends IService<Report> {
      * @param reportQuery 分页查询参数
      * @return 举报集合
      */
-    List<Report> list(ReportQuery reportQuery);
+    List<ReportVO> list(ReportQuery reportQuery);
+
+    boolean handle(Long id, Boolean yes, String remark);
+
+    boolean handle(Long id);
 }

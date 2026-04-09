@@ -12,6 +12,7 @@ import com.bird_forum.domain.po.Follow;
 import com.bird_forum.domain.po.User;
 import com.bird_forum.context.MessageContext;
 import com.bird_forum.domain.query.UserQuery;
+import com.bird_forum.domain.vo.LoginVO;
 import com.bird_forum.domain.vo.UserVO;
 import com.bird_forum.exception.UserInfoException;
 import com.bird_forum.mapper.FollowMapper;
@@ -45,7 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final FollowMapper followMapper;
 
     @Override
-    public String login(UserDTO userDTO) {
+    public LoginVO login(UserDTO userDTO) {
         String account = userDTO.getAccount(), password = userDTO.getPassword();
 
         // 账号或者密码为空
@@ -72,7 +73,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 存储id
         ThreadContext.set(user.getId());
 
-        return JWTUtils.create(user.getId());
+        LoginVO loginVO = new LoginVO();
+
+        loginVO.setToken(JWTUtils.create(user.getId()));
+        user.setAvatar(MinioUtils.getFileUrl(user.getAvatar()));
+        loginVO.setUser(BeanUtil.copyProperties(user, UserVO.class));
+
+        return loginVO;
     }
 
     @Override
@@ -161,6 +168,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .eq(userQuery.getSex() != null, User::getSex, userQuery.getSex())
                 .eq(userQuery.getStatus() != null, User::getStatus, userQuery.getStatus())
                 .list(userQuery.toPage());
+
+        users.forEach(user -> {
+            user.setAvatar(MinioUtils.getFileUrl(user.getAvatar()));
+        });
+        users = users.subList((userQuery.getPageNo() - 1) * userQuery.getPageSize(), Math.min(userQuery.getPageNo() * userQuery.getPageSize(), users.size()));
 
         return BeanUtil.copyToList(users, UserVO.class);
     }

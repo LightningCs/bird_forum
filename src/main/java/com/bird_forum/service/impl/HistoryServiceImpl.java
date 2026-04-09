@@ -1,13 +1,17 @@
 package com.bird_forum.service.impl;
 
-import com.bird_forum.context.ThreadContext;
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.bird_forum.domain.po.Article;
 import com.bird_forum.domain.po.History;
-import com.bird_forum.domain.query.PageQuery;
+import com.bird_forum.domain.query.HistoryQuery;
 import com.bird_forum.domain.vo.HistoryVO;
 import com.bird_forum.mapper.HistoryMapper;
+import com.bird_forum.service.IArticleService;
 import com.bird_forum.service.IHistoryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird_forum.util.BeanUtils;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +29,24 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> implements IHistoryService {
-    public final HistoryMapper historyMapper;
+
+    @Resource
+    private IArticleService iArticleService;
 
     /**
      * 获取历史记录
      * @return 历史记录
      */
     @Override
-    public List<HistoryVO> listHistory(PageQuery query) {
-        Long id = ThreadContext.get();
+    public List<HistoryVO> listHistory(HistoryQuery query) {
+        List<HistoryVO> histories = BeanUtil.copyToList(list(new LambdaQueryWrapper<History>()
+                .eq(History::getUserId, query.getUserId())), HistoryVO.class);
 
-        return historyMapper.listHistory(id);
+        histories.forEach(hisStory -> {
+            hisStory.setArticle(iArticleService.getById(hisStory.getArticleId()));
+        });
+
+        return histories;
     }
 
     /**

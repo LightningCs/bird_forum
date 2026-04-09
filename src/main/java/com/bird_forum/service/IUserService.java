@@ -4,6 +4,7 @@ import com.bird_forum.domain.dto.UserDTO;
 import com.bird_forum.domain.po.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bird_forum.domain.query.UserQuery;
+import com.bird_forum.domain.vo.LoginVO;
 import com.bird_forum.domain.vo.UserVO;
 
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public interface IUserService extends IService<User> {
 
-    String login(UserDTO userDTO);
+    LoginVO login(UserDTO userDTO);
 
     boolean register(UserDTO userDTO);
 

@@ -22,4 +22,19 @@ public class ArticleQuery extends PageQuery{
 
     @Schema(description = "类型 1点赞 2收藏")
     private Integer type;
+
+    @Schema(description = "标题")
+    private String title;
+
+    @Schema(description = "内容")
+    private String context;
+
+    @Schema(description = "发布者")
+    private String publisherName;
+
+    @Schema(description = "违规状态")
+    private Integer violationStatus;
+
+    @Schema(description = "文章状态")
+    private Integer status;
 }

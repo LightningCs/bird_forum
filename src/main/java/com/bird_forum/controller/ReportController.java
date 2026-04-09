@@ -43,7 +43,6 @@ public class ReportController {
     @Operation(summary = "添加举报", description = "添加举报", method = "POST")
     public ResponseData add(@RequestBody ReportDTO reportDTO) {
         log.info("添加举报:{}", reportDTO);
-        reportDTO.setReporterId(ThreadContext.get());
 
         // 添加举报成功
         if (iReportService.save(BeanUtil.copyProperties(reportDTO, Report.class))) {
@@ -139,6 +138,30 @@ public class ReportController {
     public ResponseData<List<ReportVO>> list(ReportQuery reportQuery) {
         log.info("分页查询举报:{}", reportQuery);
 
-        return ResponseData.success(BeanUtil.copyToList(iReportService.list(reportQuery), ReportVO.class));
+        return ResponseData.success(iReportService.list(reportQuery));
+    }
+
+    @PostMapping("/{id}")
+    @Operation(summary = "处理举报", description = "处理举报", method = "POST")
+    public ResponseData handle(@PathVariable Long id, Boolean yes, String remark) {
+        log.info("处理举报:{}", id);
+
+        if (iReportService.handle(id, yes, remark)) {
+            return ResponseData.success();
+        }
+
+        return ResponseData.error();
+    }
+
+    @PostMapping("/ai/{id}")
+    @Operation(summary = "ai处理举报", description = "ai处理举报", method = "POST")
+    public ResponseData aiHandle(@PathVariable Long id) {
+        log.info("处理举报:{}", id);
+
+        if (iReportService.handle(id)) {
+            return ResponseData.success();
+        }
+
+        return ResponseData.error();
     }
 }

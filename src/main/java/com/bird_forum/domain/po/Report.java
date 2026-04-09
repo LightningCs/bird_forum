@@ -39,11 +39,20 @@ public class Report implements Serializable {
     @Schema(description = "举报理由id")
     private Long reasonId;
 
+    @Schema(description = "目标类型")
+    private String targetType;
+
+    @Schema(description = "目标id")
+    private Long targetId;
+
     @Schema(description = "内容")
     private String context;
 
     @Schema(description = "状态")
     private String status;
+
+    @Schema(description = "备注")
+    private String remark;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Schema(description = "创建时间")

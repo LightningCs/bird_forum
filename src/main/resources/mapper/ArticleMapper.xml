@@ -22,7 +22,23 @@
             <if test="category != null">
                 and c.name like concat('%', #{category}, '%')
             </if>
+            <if test="title != null and title != ''">
+                and a.title like concat('%', #{title}, '%')
+            </if>
+            <if test="context != null and context != ''">
+                and a.context like concat('%', #{context}, '%')
+            </if>
+            <if test="publisherName != null and publisherName != ''">
+                and u.username like concat('%', #{publisherName}, '%')
+            </if>
+            <if test="violationStatus != null and violationStatus != ''">
+                and a.is_illegal = #{violationStatus}
+            </if>
+            <if test="status != null and status != ''">
+                and a.status = #{status}
+            </if>
         </where>
+        order by a.create_time desc, a.like_num desc
     </select>
     <select id="listHotArticleList" resultType="com.bird_forum.domain.vo.ArticleVO">
         select a.id, a.title, a.context, a.publisher_id, u.username as `publisher_name`, u.avatar as `avatar`, a.image, a.status, a.like_num, a.create_time, a.update_time

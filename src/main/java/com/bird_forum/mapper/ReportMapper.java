@@ -2,7 +2,11 @@ package com.bird_forum.mapper;
 
 import com.bird_forum.domain.po.Report;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.bird_forum.domain.query.ReportQuery;
+import com.bird_forum.domain.vo.ReportVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +19,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ReportMapper extends BaseMapper<Report> {
 
+    List<ReportVO> list(ReportQuery reportQuery);
 }

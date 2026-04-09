@@ -1,0 +1,25 @@
+-- 文章浏览量测试数据
+-- 为20篇文章（ID 4-24）赋予浏览量
+
+INSERT INTO `article_views` (`article_id`, `view_count`) VALUES
+(4, 156),    -- Spring Boot入门教程 (like_num: 15)
+(5, 234),    -- Java并发编程实战 (like_num: 23)
+(6, 189),    -- MySQL数据库优化技巧 (like_num: 18)
+(7, 128),    -- Vue3组合式API详解 (like_num: 12)
+(8, 315),    -- Redis缓存实战应用 (like_num: 31)
+(9, 278),    -- Docker容器化部署指南 (like_num: 27)
+(10, 95),    -- 设计模式之单例模式 (like_num: 9)
+(11, 456),   -- Git版本控制最佳实践 (like_num: 45)
+(12, 389),   -- 微服务架构设计思考 (like_num: 38)
+(13, 227),   -- 前端性能优化实践 (like_num: 22)
+(14, 335),   -- Linux常用命令大全 (like_num: 33)
+(15, 198),   -- Python数据分析入门 (like_num: 19)
+(16, 285),   -- 网络安全防护策略 (like_num: 28)
+(17, 412),   -- 算法与数据结构精讲 (like_num: 41)
+(18, 167),   -- 单元测试最佳实践 (like_num: 16)
+(19, 248),   -- 消息队列应用场景 (like_num: 24)
+(20, 378),   -- 代码规范与重构技巧 (like_num: 37)
+(21, 526),   -- 机器学习基础入门 (like_num: 52)
+(22, 302),   -- 云计算服务选型指南 (like_num: 30)
+(23, 215),   -- 敏捷开发实践分享 (like_num: 21)
+(24, 267);   -- TypeScript进阶指南 (like_num: 26)

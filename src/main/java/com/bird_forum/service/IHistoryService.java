@@ -2,6 +2,7 @@ package com.bird_forum.service;
 
 import com.bird_forum.domain.po.History;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bird_forum.domain.query.HistoryQuery;
 import com.bird_forum.domain.query.PageQuery;
 import com.bird_forum.domain.vo.HistoryVO;
 
@@ -21,7 +22,7 @@ public interface IHistoryService extends IService<History> {
      * 获取历史记录
      * @return 历史记录
      */
-    List<HistoryVO> listHistory(PageQuery query);
+    List<HistoryVO> listHistory(HistoryQuery query);
 
     Boolean updateHistory(Long articleId, Long userId);
 }

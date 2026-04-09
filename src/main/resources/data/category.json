@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "name": "人工智能",
+    "icon": "/icon/科技.png",
+    "status": "启用",
+    "create_time": "2026-03-08 18:55:43",
+    "update_time": "2026-04-04 15:46:02"
+  },
+  {
+    "id": 2,
+    "name": "Java",
+    "icon": "/icon/java.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  },
+  {
+    "id": 3,
+    "name": "Python",
+    "icon": "/icon/python.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  },
+  {
+    "id": 4,
+    "name": "Redis",
+    "icon": "/icon/redis.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  },
+  {
+    "id": 5,
+    "name": "Vue",
+    "icon": "/icon/vue.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  },
+  {
+    "id": 6,
+    "name": "Spring Boot",
+    "icon": "/icon/springboot.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  },
+  {
+    "id": 7,
+    "name": "Pytorch",
+    "icon": "/icon/pytorch.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  },
+  {
+    "id": 8,
+    "name": "Nginx",
+    "icon": "/icon/nginx.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  },
+  {
+    "id": 9,
+    "name": "MySQL",
+    "icon": "/icon/mysql_1.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  },
+  {
+    "id": 10,
+    "name": "LangChain",
+    "icon": "/icon/langchain.png",
+    "status": "启用",
+    "create_time": "2026-03-10 13:15:00",
+    "update_time": null
+  }
+]

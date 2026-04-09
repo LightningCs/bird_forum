@@ -13,6 +13,6 @@ spring:
       accept-empty-array-as-null-object: true
 
 server:
-  port: ${SERVER_PORT:6666}
+  port: ${SERVER_PORT:8088}
   servlet:
     context-path: /

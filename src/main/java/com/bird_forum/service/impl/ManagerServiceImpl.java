@@ -28,7 +28,7 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
     public List<ManagerVO> listManagers(ManagerQuery query) {
         List<Manager> managers = lambdaQuery()
                 .like(ObjectUtil.isNotNull(query.getName()), Manager::getName, query.getName())
-                .like(ObjectUtil.isNotNull(query.getAccount()), Manager::getAccount, query.getAccount())
+                .like(ObjectUtil.isNotNull(query.getIdentity()), Manager::getIdentity, query.getIdentity())
                 .eq(ObjectUtil.isNotNull(query.getStatus()), Manager::getStatus, query.getStatus())
                 .orderByDesc(Manager::getCreateTime)
                 .list(query.toPage());

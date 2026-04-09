@@ -11,6 +11,9 @@ public class UserQuery extends PageQuery {
     @Schema(description = "用户名")
     private String username;
 
+    @Schema(description = "账号")
+    private String account;
+
     @Schema(description = "性别")
     private String sex;
 

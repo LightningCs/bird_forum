@@ -68,6 +68,12 @@ public class ArticleVO implements Serializable {
     @Schema(description = "分类列表")
     private List<Category> categories;
 
+    @Schema(description = "是否点赞")
+    private Boolean isLike;
+
+    @Schema(description = "是否收藏")
+    private Boolean isCollect;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Schema(description = "创建时间")
     private LocalDateTime createTime;

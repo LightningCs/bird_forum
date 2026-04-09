@@ -3,6 +3,7 @@ package com.bird_forum.controller;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.dto.UserDTO;
 import com.bird_forum.domain.query.UserQuery;
+import com.bird_forum.domain.vo.LoginVO;
 import com.bird_forum.domain.vo.UserVO;
 import com.bird_forum.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public class UserController {
      */
     @PostMapping("/login")
     @Operation(summary = "用户登录", description = "用户登录", method = "POST")
-    public ResponseData<String> login(@RequestBody UserDTO userDTO) {
+    public ResponseData<LoginVO> login(@RequestBody UserDTO userDTO) {
         log.info("登录:{}", userDTO.toString());
 
         // 登录
@@ -120,7 +121,7 @@ public class UserController {
      */
     @GetMapping
     @Operation(summary = "查询用户", description = "查询用户", method = "GET")
-    public ResponseData<List<UserVO>> list(@RequestParam UserQuery userQuery) {
+    public ResponseData<List<UserVO>> list(UserQuery userQuery) {
         log.info("查询条件:{}", userQuery);
 
         return ResponseData.success(userService.list(userQuery));
@@ -139,4 +140,15 @@ public class UserController {
         return ResponseData.success(userService.getUserDetail(userId));
     }
 
+    @DeleteMapping("/batch")
+    @Operation(summary = "批量删除用户", description = "批量删除用户", method = "DELETE")
+    public ResponseData batchDelete(@RequestBody List<Long> userIds) {
+        log.info("批量删除用户, userIds:{}", userIds);
+
+        if (userService.removeByIds(userIds)) {
+            return ResponseData.success("删除成功!");
+        }
+
+        return ResponseData.error("删除失败!");
+    }
 }

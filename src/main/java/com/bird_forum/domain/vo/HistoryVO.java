@@ -27,5 +27,5 @@ public class HistoryVO implements Serializable {
     private LocalDateTime viewTime;
 
     @Schema(description = "文章信息")
-    private Article article;
+    private ArticleVO article;
 }

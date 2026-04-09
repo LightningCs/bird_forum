@@ -1,9 +1,13 @@
 package com.bird_forum.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.bird_forum.context.ThreadContext;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.dto.CommentDTO;
+import com.bird_forum.domain.po.Article;
+import com.bird_forum.domain.po.Comment;
 import com.bird_forum.domain.query.CommentQuery;
 import com.bird_forum.domain.vo.CommentVO;
 import com.bird_forum.service.ICommentService;
@@ -101,5 +105,91 @@ public class CommentController {
         }
 
         return ResponseData.error();
+    }
+
+    /**
+     * 批量隐藏
+     *
+     * @return 响应数据
+     */
+    @PutMapping("hidden/batch")
+    @Operation(summary = "批量隐藏", description = "批量隐藏", method = "PUT")
+    public ResponseData updateComment(@RequestBody List<Long> ids) {
+        log.info("批量隐藏: {}", ids);
+
+        if (iCommentService.update(new LambdaUpdateWrapper<Comment>()
+                .set(Comment::getStatus, "不可见")
+                .in(Comment::getId, ids))) {
+            return ResponseData.success();
+        }
+
+        return ResponseData.error();
+    }
+
+
+    /**
+     * 隐藏
+     *
+     * @return 响应数据
+     */
+    @PutMapping("hidden")
+    @Operation(summary = "隐藏", description = "隐藏", method = "PUT")
+    public ResponseData updateComment(Long id, String status) {
+        log.info("{}: {}", status, id);
+
+        if (iCommentService.update(new LambdaUpdateWrapper<Comment>()
+                .set(Comment::getStatus, status)
+                .eq(Comment::getId, id))) {
+            return ResponseData.success();
+        }
+
+        return ResponseData.error();
+    }
+
+
+    @DeleteMapping("delete/batch")
+    @Operation(summary = "批量删除评论", description = "批量删除评论", method = "PUT")
+    public ResponseData batchDelete(@RequestBody List<Long> articleIds) {
+        log.info("批量删除评论 {}", articleIds);
+
+        try {
+            iCommentService.remove(new LambdaQueryWrapper<Comment>()
+                    .in(Comment::getId, articleIds));
+            return ResponseData.success();
+        } catch (Exception e) {
+            log.error("批量删除评论失败", e);
+            return ResponseData.error("批量删除评论失败");
+        }
+    }
+
+    @PutMapping("illegal")
+    @Operation(summary = "违规", description = "违规", method = "PUT")
+    public ResponseData illegal(Long articleId, Integer isIllegal) {
+        log.info("评论 {} 是否违规: {}", articleId, isIllegal);
+
+        try {
+            iCommentService.update(new LambdaUpdateWrapper<Comment>()
+                    .set(Comment::getIsIllegal, isIllegal)
+                    .eq(Comment::getId, articleId));
+            return ResponseData.success();
+        } catch (Exception e) {
+            log.error("批量删除评论失败", e);
+            return ResponseData.error("批量删除评论失败");
+        }
+    }
+
+    @DeleteMapping("{id}")
+    @Operation(summary = "删除", description = "删除", method = "DELETE")
+    public ResponseData illegal(@PathVariable Long id) {
+        log.info("删除 {} ", id);
+
+        try {
+            iCommentService.remove(new LambdaQueryWrapper<Comment>()
+                    .eq(Comment::getId, id));
+            return ResponseData.success();
+        } catch (Exception e) {
+            log.error("删除失败!", e);
+            return ResponseData.error("删除失败!");
+        }
     }
 }

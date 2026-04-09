@@ -16,14 +16,14 @@ import lombok.experimental.Accessors;
 @Schema(description = "举报分页查询参数")
 public class ReportQuery extends PageQuery{
 
-    @Schema(description = "举报人id")
-    private Long reporterId;
+    @Schema(description = "举报人")
+    private String reporter;
 
     @Schema(description = "举报理由id")
     private Long reasonId;
 
-    @Schema(description = "内容")
-    private String context;
+    @Schema(description = "目标类型")
+    private String targetType;
 
     @Schema(description = "状态")
     private String status;

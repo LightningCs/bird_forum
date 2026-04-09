@@ -32,6 +32,12 @@ public class ReportDTO implements Serializable {
     @Schema(description = "举报理由id")
     private Long reasonId;
 
+    @Schema(description = "目标类型")
+    private String targetType;
+
+    @Schema(description = "目标id")
+    private Long targetId;
+
     @Schema(description = "内容")
     private String context;
 

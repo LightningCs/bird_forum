@@ -68,7 +68,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             setData(item);
         });
 
-        return articles;
+        return articles.subList((articleQuery.getPageNo() - 1) * articleQuery.getPageSize(), Math.min(articles.size(), articleQuery.getPageNo() * articleQuery.getPageSize()));
     }
 
     /**

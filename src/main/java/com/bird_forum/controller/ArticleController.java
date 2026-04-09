@@ -2,7 +2,9 @@ package com.bird_forum.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.dto.ArticleDTO;
 import com.bird_forum.domain.po.Article;
@@ -38,6 +40,12 @@ import java.util.List;
 public class ArticleController {
     @Resource
     private IArticleService iArticleService;
+    
+    @Resource
+    private IArticleViewsService iArticleViewsService;
+
+    @Resource
+    private IArticleLikeCollectionService iArticleLikeCollectionService;
 
     /**
      * 获取文章列表
@@ -58,10 +66,21 @@ public class ArticleController {
      */
     @GetMapping
     @Operation(summary = "获取文章详情", description = "获取文章详情", method = "GET")
-    public ResponseData<ArticleVO> getById(Long id) {
+    public ResponseData<ArticleVO> getById(Long userId, Long id) {
         log.info("获取文章 {} 的详细信息", id);
 
-        return ResponseData.success(iArticleService.getById(id));
+        ArticleVO one = iArticleService.getById(id);
+
+        one.setIsLike(ObjectUtil.isNotNull(iArticleLikeCollectionService.getOne(new LambdaQueryWrapper<ArticleLikeCollection>()
+                .eq(ArticleLikeCollection::getArticleId, id)
+                .eq(ArticleLikeCollection::getUserId, userId)
+                .eq(ArticleLikeCollection::getType, 1))));
+        one.setIsCollect(ObjectUtil.isNotNull(iArticleLikeCollectionService.getOne(new LambdaQueryWrapper<ArticleLikeCollection>()
+                .eq(ArticleLikeCollection::getArticleId, id)
+                .eq(ArticleLikeCollection::getUserId, userId)
+                .eq(ArticleLikeCollection::getType, 2))));
+
+        return ResponseData.success(one);
     }
 
     /**
@@ -145,5 +164,87 @@ public class ArticleController {
         log.info("获取用户 {} 收藏的文章", userId);
 
         return ResponseData.success(iArticleService.listCollected(userId));
+    }
+
+    /**
+     * 增加文章浏览量
+     * @param articleId 文章id
+     * @return 是否增加成功
+     */
+    @PostMapping("/view/{articleId}")
+    @Operation(summary = "增加文章浏览量", description = "增加文章浏览量", method = "POST")
+    public ResponseData incrementViewCount(@PathVariable Long articleId) {
+        log.info("增加文章 {} 的浏览量", articleId);
+        
+        try {
+            iArticleViewsService.incrementViewCount(articleId);
+            return ResponseData.success();
+        } catch (Exception e) {
+            log.error("增加文章浏览量失败", e);
+            return ResponseData.error("增加文章浏览量失败");
+        }
+    }
+
+    @PutMapping("/hidden/batch")
+    @Operation(summary = "批量隐藏文章", description = "批量隐藏文章", method = "PUT")
+    public ResponseData batchHidden(@RequestBody List<Long> articleIds) {
+        log.info("批量隐藏文章 {}", articleIds);
+
+        try {
+            iArticleService.update(new LambdaUpdateWrapper<Article>()
+                    .set(Article::getStatus, "不可见")
+                    .in(Article::getId, articleIds));
+            return ResponseData.success();
+        } catch (Exception e) {
+            log.error("批量隐藏文章失败", e);
+            return ResponseData.error("批量隐藏文章失败");
+        }
+    }
+
+    @PutMapping("/hidden")
+    @Operation(summary = "隐藏文章", description = "隐藏文章", method = "PUT")
+    public ResponseData hidden(@RequestBody ArticleDTO articleDTO) {
+        log.info("隐藏文章 {}", articleDTO);
+
+        try {
+            iArticleService.update(new LambdaUpdateWrapper<Article>()
+                    .set(Article::getStatus, articleDTO.getStatus())
+                    .eq(Article::getId, articleDTO.getId()));
+            return ResponseData.success();
+        } catch (Exception e) {
+            log.error("隐藏文章失败", e);
+            return ResponseData.error("隐藏文章失败");
+        }
+    }
+
+    @DeleteMapping("/delete/batch")
+    @Operation(summary = "批量删除文章", description = "批量删除文章", method = "PUT")
+    public ResponseData batchDelete(@RequestBody List<Long> articleIds) {
+        log.info("批量删除文章 {}", articleIds);
+
+        try {
+            iArticleService.remove(new LambdaQueryWrapper<Article>()
+                    .in(Article::getId, articleIds));
+            return ResponseData.success();
+        } catch (Exception e) {
+            log.error("批量删除文章失败", e);
+            return ResponseData.error("批量删除文章失败");
+        }
+    }
+
+    @PutMapping("/illegal")
+    @Operation(summary = "违规", description = "违规", method = "PUT")
+    public ResponseData illegal(Long articleId, Integer isIllegal) {
+        log.info("文章 {} 是否违规: {}", articleId, isIllegal);
+
+        try {
+            iArticleService.update(new LambdaUpdateWrapper<Article>()
+                    .set(Article::getIsIllegal, isIllegal)
+                    .eq(Article::getId, articleId));
+            return ResponseData.success();
+        } catch (Exception e) {
+            log.error("批量删除文章失败", e);
+            return ResponseData.error("批量删除文章失败");
+        }
     }
 }

@@ -26,6 +26,9 @@ public class ManagerVO {
     @Schema(description = "管理员账号")
     private String account;
 
+    @Schema(description = "管理员身份")
+    private Integer identity;
+
     @Schema(description = "管理员状态")
     private String status;
 

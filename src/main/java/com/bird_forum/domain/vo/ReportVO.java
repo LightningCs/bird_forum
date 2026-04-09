@@ -31,6 +31,9 @@ public class ReportVO implements Serializable {
     @Schema(description = "举报人id")
     private Long reporterId;
 
+    @Schema(description = "举报人名称")
+    private String reporterName;
+
     @Schema(description = "举报理由id")
     private Long reasonId;
 
@@ -39,6 +42,9 @@ public class ReportVO implements Serializable {
 
     @Schema(description = "状态")
     private String status;
+
+    @Schema(description = "备注")
+    private String remark;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Schema(description = "创建时间")

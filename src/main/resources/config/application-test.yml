@@ -5,14 +5,23 @@ spring:
     url: jdbc:mysql://${MYSQL_ADDRESS:127.0.0.1:3306}/bird_forum?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
   # ===== 模型设置 =====
-  ai:
-    openai:
-      api-key:
-      base-url:
-      chat:
-        options:
-          model:
-
+#  ai:
+#    openai:
+#      api-key:
+#      base-url:
+#      chat:
+#        options:
+#          model:
+  elasticsearch:
+    uris: ${ELASTIC_SEARCH_URIS:http://localhost:9500}
+    username: ${ELASTIC_SEARCH_USERNAME:elastic}
+    password: ${ELASTIC_SEARCH_PASSWORD:151486}
+    connection-timeout: 5000ms
+    socket-timeout: 5000ms
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
 logging:
   pattern:
     dateformat: yyyy-MM-dd HH:mm:ss
