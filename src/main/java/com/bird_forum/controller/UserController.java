@@ -6,6 +6,7 @@ import com.bird_forum.domain.query.UserQuery;
 import com.bird_forum.domain.vo.LoginVO;
 import com.bird_forum.domain.vo.UserVO;
 import com.bird_forum.service.IUserService;
+import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,10 @@ public class UserController {
     @Operation(summary = "修改用户密码", description = "修改用户密码", method = "PUT")
     public ResponseData modifyPassword(@RequestBody UserDTO userDTO) {
         log.info("旧密码:{}, 新密码:{}", userDTO.getPassword(), userDTO.getRePassword());
+
+        if (StringUtils.isEmpty(userDTO.getCode()) || !userDTO.getCode().equals(MailController.codeMap.get(userDTO.getAccount()))) {
+            return ResponseData.error("验证码错误!");
+        }
 
         // 修改密码
         if (userService.modifyPassword(userDTO)) {

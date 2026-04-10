@@ -53,12 +53,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (account == null || password == null)
             throw new UserInfoException(MessageContext.ACCOUNT_PASSWORD_NULL);
 
-//        try {
-//            // 密码加密
-//            password = EncryptUtils.md5(password);
-//        } catch (Exception e) {
-//            throw new RuntimeException("加密失败");
-//        }
+        try {
+            // 密码加密
+            password = EncryptUtils.md5(password);
+        } catch (Exception e) {
+            throw new RuntimeException("加密失败");
+        }
 
         // 根据账号密码查询用户信息
         User user = lambdaQuery()
@@ -121,7 +121,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new UserInfoException(MessageContext.PASSWORD_FORMAT_ERROR);
 
         // 两次输入不一致
-        if (userDTO.getPassword().equals(userDTO.getRePassword()))
+        if (!userDTO.getPassword().equals(userDTO.getRePassword()))
             throw new UserInfoException(MessageContext.PASSWORD_REPASSWORD_NOT_EQUALS);
 
         String password;
@@ -136,7 +136,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 更新密码
         return lambdaUpdate()
                 .set(User::getPassword, password)
-                .eq(User::getId, ThreadContext.get())
+                .eq(User::getId, userDTO.getId())
                 .update();
     }
 

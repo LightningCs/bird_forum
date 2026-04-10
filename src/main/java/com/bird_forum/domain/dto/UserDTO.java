@@ -49,6 +49,12 @@ public class UserDTO implements Serializable {
     private String rePassword;
 
     /**
+     * 验证码
+     */
+    @Schema(description = "验证码")
+    private String code;
+
+    /**
      * 性别
      */
     @Schema(description = "性别")
