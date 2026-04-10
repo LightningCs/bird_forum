@@ -141,13 +141,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public boolean changeStatus(Long code) {
+    public boolean changeStatus(Long userId, Long code) {
         String status = code == 0 ? "启用" : "封禁";
 
         // 更新状态
         return lambdaUpdate()
                 .set(User::getStatus, status)
-                .eq(User::getId, ThreadContext.get())
+                .eq(User::getId, userId)
                 .update();
     }
 
@@ -230,7 +230,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 查询用户基本信息
         User user = getById(userId);
         if (user == null) {
-            throw new UserInfoException(MessageContext.USER_NOT_EXIST);
+            user = new User();
+
+            user.setUsername("用户已注销");
+            user.setAvatar(MinioUtils.getFileUrl("/avatar/error.png"));
+
+            return BeanUtil.copyProperties(user, UserVO.class);
         }
 
         UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);

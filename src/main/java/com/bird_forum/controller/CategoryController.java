@@ -39,7 +39,7 @@ public class CategoryController {
      */
     @PostMapping
     @Operation(summary = "新增分类", description = "新增分类", method = "POST")
-    public ResponseData addCategory(@RequestBody CategoryDTO categoryDTO) {
+    public ResponseData addCategory(@ModelAttribute CategoryDTO categoryDTO) {
         log.info("新增分类: {}", categoryDTO);
 
         if (iCategoryService.addCategory(categoryDTO)) {
@@ -75,7 +75,7 @@ public class CategoryController {
      */
     @PutMapping
     @Operation(summary = "更新分类", description = "更新分类", method = "PUT")
-    public ResponseData updateCategory(@RequestBody CategoryDTO categoryDTO) {
+    public ResponseData updateCategory(@ModelAttribute CategoryDTO categoryDTO) {
         log.info("更新分类: {}", categoryDTO);
 
         if (iCategoryService.update(categoryDTO)) {
@@ -108,6 +108,7 @@ public class CategoryController {
     @GetMapping("/list")
     @Operation(summary = "获取分类列表", description = "获取分类列表", method = "GET")
     public ResponseData<List<CategoryVO>> listCategory(CategoryQuery categoryQuery) {
-        return ResponseData.success(iCategoryService.list(categoryQuery));
+        List<CategoryVO> resList = iCategoryService.list(categoryQuery);
+        return ResponseData.success(resList.subList((categoryQuery.getPageNo() - 1) * categoryQuery.getPageSize(), Math.min(categoryQuery.getPageNo() * categoryQuery.getPageSize(), resList.size())));
     }
 }

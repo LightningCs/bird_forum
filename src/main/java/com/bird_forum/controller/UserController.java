@@ -85,13 +85,13 @@ public class UserController {
      * @param code 状态
      * @return 响应数据
      */
-    @PutMapping("/status/{code}")
+    @PutMapping("/status/{userId}/{code}")
     @Operation(summary = "修改用户状态", description = "修改用户状态", method = "PUT")
-    public ResponseData changeStatus(@PathVariable Long code) {
+    public ResponseData changeStatus(@PathVariable Long userId, @PathVariable Long code) {
         log.info("用户状态码:{}", code);
 
         // 根据状态码更新状态
-        if (userService.changeStatus(code)) {
+        if (userService.changeStatus(userId, code)) {
             return ResponseData.success();
         }
 

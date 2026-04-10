@@ -14,10 +14,7 @@
         from article as a left join user as u on a.publisher_id = u.id left join article_category as ac on a.id = ac.article_id left join category as c on ac.category_id = c.id
         <where>
             <if test="keyword != null and keyword !=''">
-                and a.title like concat('%', #{keyword}, '%')
-            </if>
-            <if test="keyword != null">
-                and a.context like concat('%', #{keyword}, '%')
+                and (a.title like concat('%', #{keyword}, '%') or a.context like concat('%', #{keyword}, '%'))
             </if>
             <if test="category != null">
                 and c.name like concat('%', #{category}, '%')

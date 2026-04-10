@@ -2,13 +2,16 @@ package com.bird_forum.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bird_forum.context.ThreadContext;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.dto.ReportDTO;
 import com.bird_forum.domain.po.Report;
+import com.bird_forum.domain.po.User;
 import com.bird_forum.domain.query.ReportQuery;
 import com.bird_forum.domain.vo.ReportVO;
 import com.bird_forum.service.IReportService;
+import com.bird_forum.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -32,6 +35,9 @@ import java.util.List;
 public class ReportController {
     @Resource
     private IReportService iReportService;
+
+    @Resource
+    private IUserService iUserService;
 
     /**
      * 添加举报
@@ -124,7 +130,10 @@ public class ReportController {
     public ResponseData<ReportVO> list(Long id) {
         log.info("查询举报: {}", id);
 
-        return ResponseData.success(BeanUtil.copyProperties(iReportService.getById(id), ReportVO.class));
+        ReportVO res = BeanUtil.copyProperties(iReportService.getById(id), ReportVO.class);
+        res.setReporterName(iUserService.getOne(new LambdaQueryWrapper<User>().eq(User::getId, res.getReporterId())).getUsername());
+
+        return ResponseData.success(res);
     }
 
     /**

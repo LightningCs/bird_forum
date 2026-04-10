@@ -26,7 +26,7 @@ public interface IUserService extends IService<User> {
 
     boolean modifyPassword(UserDTO userDTO);
 
-    boolean changeStatus(Long code);
+    boolean changeStatus(Long userId, Long code);
 
     boolean destroy();
 

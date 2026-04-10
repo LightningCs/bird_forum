@@ -13,6 +13,12 @@ import lombok.experimental.Accessors;
 @Schema(description = "消息DTO")
 public class NoticeDTO {
     /**
+     * id
+     */
+    @Schema(description = "id")
+    private Long id;
+
+    /**
      * 标题
      */
     @Schema(description = "标题")

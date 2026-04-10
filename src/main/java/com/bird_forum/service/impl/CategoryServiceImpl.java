@@ -1,6 +1,7 @@
 package com.bird_forum.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bird_forum.domain.dto.CategoryDTO;
@@ -14,6 +15,7 @@ import com.bird_forum.service.ICategoryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird_forum.util.BeanUtils;
 import com.bird_forum.util.MinioUtils;
+import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +44,16 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      */
     @Override
     public boolean addCategory(CategoryDTO categoryDTO) {
-        return save(new Category(categoryDTO.getName()));
+        String url = "/avatar/" + categoryDTO.getIcon().getResource().getFilename();
+        boolean success = save(new Category(categoryDTO.getName(), url, categoryDTO.getStatus()));
+
+        try {
+            MinioUtils.uploadFile(categoryDTO.getIcon().getResource().getInputStream(), url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return success;
     }
 
     /**
@@ -53,11 +64,28 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      */
     @Override
     public boolean update(CategoryDTO categoryDTO) {
-        return lambdaUpdate()
+        String url = null;
+
+        if (ObjectUtil.isNotNull(categoryDTO.getIcon())) {
+            url = "/avatar/" + categoryDTO.getIcon().getResource().getFilename();
+        }
+
+        boolean success = lambdaUpdate()
                 .set(Category::getName, categoryDTO.getName())
+                .set(StringUtils.isNotEmpty(url), Category::getIcon, url)
                 .set(Category::getStatus, categoryDTO.getStatus())
                 .eq(Category::getId, categoryDTO.getId())
                 .update();
+
+        try {
+            if (ObjectUtil.isNotNull(categoryDTO.getIcon())) {
+                MinioUtils.uploadFile(categoryDTO.getIcon().getResource().getInputStream(), url);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return success;
     }
 
     /**

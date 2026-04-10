@@ -4,25 +4,21 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bird_forum.domain.dto.ArticleDTO;
-import com.bird_forum.domain.po.Article;
-import com.bird_forum.domain.po.ArticleCategory;
-import com.bird_forum.domain.po.ArticleLikeCollection;
-import com.bird_forum.domain.po.ArticleViews;
+import com.bird_forum.domain.po.*;
 import com.bird_forum.domain.query.ArticleQuery;
 import com.bird_forum.domain.vo.ArticleVO;
 import com.bird_forum.mapper.ArticleMapper;
 import com.bird_forum.mapper.ArticleCategoryMapper;
-import com.bird_forum.service.IArticleCategoryService;
-import com.bird_forum.service.IArticleLikeCollectionService;
-import com.bird_forum.service.IArticleService;
+import com.bird_forum.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.bird_forum.service.IArticleViewsService;
 import com.bird_forum.util.MinioUtils;
+import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +47,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Resource
     private IArticleViewsService iArticleViewsService;
 
+    @Resource
+    private IUserService iUserService;
+
     /**
      * 获取文章列表
      *
@@ -64,7 +63,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 设置图片和作者头像的url
         articles.forEach(item -> {
             item.setImage(MinioUtils.getFileUrl(item.getImage()));
-            item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
+            if (StringUtils.isEmpty(item.getAvatar())) {
+                item.setPublisherName("该用户已注销");
+                item.setAvatar(MinioUtils.getFileUrl("/avatar/error.png"));
+            } else {
+                item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
+            }
             setData(item);
         });
 
@@ -100,7 +104,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
         articles.forEach(item -> {
             item.setImage(MinioUtils.getFileUrl(item.getImage()));
-            item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
+            if (StringUtils.isEmpty(item.getAvatar())) {
+                item.setPublisherName("该用户已注销");
+                item.setAvatar(MinioUtils.getFileUrl("/avatar/error.png"));
+            } else {
+                item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
+            }
             setData(item);
         });
 
@@ -149,8 +158,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public ArticleVO getById(Long id) {
         ArticleVO articleVO = articleMapper.getById(id);
 
-        articleVO.setAvatar(MinioUtils.getFileUrl(articleVO.getAvatar()));
         articleVO.setImage(MinioUtils.getFileUrl(articleVO.getImage()));
+        if (StringUtils.isEmpty(articleVO.getAvatar())) {
+            articleVO.setPublisherName("该用户已注销");
+            articleVO.setAvatar(MinioUtils.getFileUrl("/avatar/error.png"));
+        } else {
+            articleVO.setAvatar(MinioUtils.getFileUrl(articleVO.getAvatar()));
+        }
         setData(articleVO);
 
         return articleVO;
@@ -178,6 +192,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      */
     @Override
     public List<ArticleVO> listByPublisher(Long userId) {
+        if (ObjectUtil.isNull(iUserService.getById(userId))) {
+            return Collections.emptyList();
+        }
+
         List<ArticleVO> articles = articleMapper.listByPublisher(userId);
         articles.forEach(item -> {
             item.setImage(MinioUtils.getFileUrl(item.getImage()));

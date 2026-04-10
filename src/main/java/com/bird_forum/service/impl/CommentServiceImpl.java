@@ -82,7 +82,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
         // 设置头像URL和点赞状态
         allComments.forEach(commentVO -> {
-            commentVO.setAvatar(MinioUtils.getFileUrl(commentVO.getAvatar()));
+            if (StringUtils.isEmpty(commentVO.getAvatar())) {
+                commentVO.setAvatar(MinioUtils.getFileUrl("/avatar/error.png"));
+                commentVO.setUserName("该用户已注销");
+            } else {
+                commentVO.setAvatar(MinioUtils.getFileUrl(commentVO.getAvatar()));
+            }
             if (commentVO.getReplyAvatar() != null) {
                 commentVO.setReplyAvatar(MinioUtils.getFileUrl(commentVO.getReplyAvatar()));
             }

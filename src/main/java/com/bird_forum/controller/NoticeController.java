@@ -170,13 +170,13 @@ public class NoticeController {
      * @param id 通知id
      * @return 是否添加成功
      */
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/{isCancel}")
     @Operation(summary = "撤回", description = "撤回", method = "POST")
-    public ResponseData withdraw(@PathVariable Long id) {
+    public ResponseData withdraw(@PathVariable Long id, @PathVariable Boolean isCancel) {
         log.info("撤回: {}", id);
 
         iNoticeService.update(new LambdaUpdateWrapper<Notice>()
-                .set(Notice::getReceiverId, -1)
+                .set(Notice::getReceiverId, isCancel ? -1 : 0)
                 .eq(Notice::getId, id));
 
         return ResponseData.success();
@@ -185,9 +185,10 @@ public class NoticeController {
     @GetMapping("/list")
     @Operation(summary = "获取通知列表", description = "获取通知列表", method = "GET")
     public ResponseData<List<NoticeVO>> listNotices(NoticeQuery query) {
-        return ResponseData.success(BeanUtil.copyToList(iNoticeService.list(query.toPage(), new LambdaQueryWrapper<Notice>()
+        List<NoticeVO> resList = BeanUtil.copyToList(iNoticeService.list(query.toPage(), new LambdaQueryWrapper<Notice>()
                 .like(StringUtils.isNotEmpty(query.getTitle()), Notice::getTitle, query.getTitle())
                 .like(StringUtils.isNotEmpty(query.getContext()), Notice::getContext, query.getContext())
-                .eq(StringUtils.isNotEmpty(query.getType()), Notice::getType, query.getType())), NoticeVO.class));
+                .eq(StringUtils.isNotEmpty(query.getType()), Notice::getType, query.getType())), NoticeVO.class);
+        return ResponseData.success(resList.subList((query.getPageNo() - 1) * query.getPageSize(), Math.min(query.getPageNo() * query.getPageSize(), resList.size())));
     }
 }

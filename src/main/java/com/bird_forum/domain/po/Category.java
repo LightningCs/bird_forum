@@ -50,7 +50,9 @@ public class Category implements Serializable {
     @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 
-    public Category(String name) {
+    public Category(String name, String icon, String status) {
         this.name = name;
+        this.icon = icon;
+        this.status = status;
     }
 }

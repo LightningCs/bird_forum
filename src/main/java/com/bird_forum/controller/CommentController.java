@@ -66,8 +66,10 @@ public class CommentController {
     public ResponseData<List<CommentVO>> getComments(CommentQuery commentQuery) {
         log.info("获取文章的评论:{}", commentQuery);
 
+        List<CommentVO> commentVOList = iCommentService.getComments(commentQuery);
+
         // 获取当前文章的所有评论
-        return ResponseData.success(iCommentService.getComments(commentQuery));
+        return ResponseData.success(commentVOList.subList((commentQuery.getPageNo() - 1) * commentQuery.getPageSize(), Math.min(commentQuery.getPageNo() * commentQuery.getPageSize(), commentVOList.size())));
     }
 
     /**
@@ -163,13 +165,13 @@ public class CommentController {
 
     @PutMapping("illegal")
     @Operation(summary = "违规", description = "违规", method = "PUT")
-    public ResponseData illegal(Long articleId, Integer isIllegal) {
-        log.info("评论 {} 是否违规: {}", articleId, isIllegal);
+    public ResponseData illegal(Long commentId, Integer isIllegal) {
+        log.info("评论 {} 是否违规: {}", commentId, isIllegal);
 
         try {
             iCommentService.update(new LambdaUpdateWrapper<Comment>()
                     .set(Comment::getIsIllegal, isIllegal)
-                    .eq(Comment::getId, articleId));
+                    .eq(Comment::getId, commentId));
             return ResponseData.success();
         } catch (Exception e) {
             log.error("批量删除评论失败", e);

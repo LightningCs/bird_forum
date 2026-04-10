@@ -41,12 +41,12 @@ public class FollowController {
      * @param targetId 目标用户id
      * @return 响应数据
      */
-    @PostMapping
+    @PostMapping("/{userId}/{targetId}")
     @Operation(summary = "关注用户", description = "关注用户", method = "POST")
-    public ResponseData follow(@Schema(description = "目标用户id") Long targetId) {
+    public ResponseData follow(@PathVariable Long userId, @PathVariable Long targetId) {
         Follow follow = Follow.builder()
                 .targetId(targetId)
-                .followerId(ThreadContext.get())
+                .followerId(userId)
                 .build();
 
         // 关注用户
@@ -63,14 +63,14 @@ public class FollowController {
      * @param targetId 目标用户id
      * @return 响应数据
      */
-    @DeleteMapping("/{targetId}")
+    @DeleteMapping("/{userId}/{targetId}")
     @Operation(summary = "取消关注", description = "取消关注", method = "DELETE")
-    public ResponseData unfollow(@Schema(description = "目标用户id") @PathVariable Long targetId) {
+    public ResponseData unfollow(@PathVariable Long userId, @PathVariable Long targetId) {
         // 删除关注关系
         if (followService.remove(
                 new LambdaQueryWrapper<Follow>()
                         .eq(Follow::getTargetId, targetId)
-                        .eq(Follow::getFollowerId, ThreadContext.get())
+                        .eq(Follow::getFollowerId, userId)
         )) {
             return ResponseData.success();
         }

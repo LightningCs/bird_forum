@@ -5,13 +5,15 @@ spring:
     url: jdbc:mysql://${MYSQL_ADDRESS:127.0.0.1:3306}/bird_forum?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
   # ===== 模型设置 =====
-#  ai:
-#    openai:
-#      api-key:
-#      base-url:
-#      chat:
-#        options:
-#          model:
+  ai:
+    openai:
+      base-url: ${BASE_URL:https://api.deepseek.com}
+      api-key: sk-7319b0271d834e1aa945f8dd07e5e7d7
+      chat:
+        prompt: src/main/resources/static/prompt.md
+        options:
+          model: deepseek-chat
+#        completions-path: /api/chat
   elasticsearch:
     uris: ${ELASTIC_SEARCH_URIS:http://localhost:9500}
     username: ${ELASTIC_SEARCH_USERNAME:elastic}

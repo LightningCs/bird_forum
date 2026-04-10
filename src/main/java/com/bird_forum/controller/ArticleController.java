@@ -7,14 +7,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.dto.ArticleDTO;
-import com.bird_forum.domain.po.Article;
-import com.bird_forum.domain.po.ArticleLikeCollection;
-import com.bird_forum.domain.po.ArticleViews;
+import com.bird_forum.domain.po.*;
 import com.bird_forum.domain.query.ArticleQuery;
 import com.bird_forum.domain.vo.ArticleVO;
-import com.bird_forum.service.IArticleLikeCollectionService;
-import com.bird_forum.service.IArticleService;
-import com.bird_forum.service.IArticleViewsService;
+import com.bird_forum.service.*;
 import com.bird_forum.util.BeanUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,6 +42,12 @@ public class ArticleController {
 
     @Resource
     private IArticleLikeCollectionService iArticleLikeCollectionService;
+
+    @Resource
+    private IHistoryService iHistoryService;
+
+    @Resource
+    private ICommentService iCommentService;
 
     /**
      * 获取文章列表
@@ -225,6 +227,10 @@ public class ArticleController {
         try {
             iArticleService.remove(new LambdaQueryWrapper<Article>()
                     .in(Article::getId, articleIds));
+            iHistoryService.remove(new LambdaQueryWrapper<History>()
+                    .in(History::getArticleId, articleIds));
+            iCommentService.remove(new LambdaQueryWrapper<Comment>()
+                    .in(Comment::getRootId, articleIds));
             return ResponseData.success();
         } catch (Exception e) {
             log.error("批量删除文章失败", e);

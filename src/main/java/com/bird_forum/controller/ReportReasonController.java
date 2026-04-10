@@ -2,12 +2,14 @@ package com.bird_forum.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.dto.ReportReasonDTO;
 import com.bird_forum.domain.po.ReportReason;
 import com.bird_forum.domain.query.ReportReasonQuery;
 import com.bird_forum.domain.vo.ReportReasonVO;
 import com.bird_forum.service.IReportReasonService;
+import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -90,10 +92,13 @@ public class ReportReasonController {
      */
     @PutMapping
     @Operation(summary = "修改举报理由", description = "修改举报理由", method = "PUT")
-    public ResponseData update(ReportReasonDTO reportReasonDTO) {
+    public ResponseData update(@RequestBody ReportReasonDTO reportReasonDTO) {
         log.info("修改举报理由: {}", reportReasonDTO);
 
-        if (iReportReasonService.updateById(BeanUtil.copyProperties(reportReasonDTO, ReportReason.class))) {
+        if (iReportReasonService.update(new LambdaUpdateWrapper<ReportReason>()
+                .set(StringUtils.isNotEmpty(reportReasonDTO.getContext()), ReportReason::getContext, reportReasonDTO.getContext())
+                .set(StringUtils.isNotEmpty(reportReasonDTO.getStatus()), ReportReason::getStatus, reportReasonDTO.getStatus())
+                .eq(ReportReason::getId, reportReasonDTO.getId()))) {
             return ResponseData.success();
         }
 

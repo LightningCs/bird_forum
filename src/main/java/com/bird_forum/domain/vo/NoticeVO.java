@@ -27,6 +27,9 @@ public class NoticeVO implements Serializable {
     
     @Schema(description = "类型")
     private String type;
+
+    @Schema(description = "接收者id")
+    private Long receiverId;
     
     @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

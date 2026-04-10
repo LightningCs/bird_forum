@@ -13,6 +13,7 @@ import com.bird_forum.service.ICommentService;
 import com.bird_forum.service.IReportService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird_forum.service.IUserService;
+import com.bird_forum.util.ModelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -85,23 +86,23 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
     public boolean handle(Long id) {
         Report one = getById(id);
 
-        boolean yes = false;
+        boolean yes = ModelUtils.chat(one.getContext(), Boolean.class);
 
         switch (one.getTargetType()) {
             case "用户":
                 iUserService.update(new LambdaUpdateWrapper<User>()
                         .set(User::getStatus, yes ? "禁用" : "启用")
-                        .eq(User::getId, id));
+                        .eq(User::getId, one.getTargetId()));
                 break;
             case "文章":
                 iArticleService.update(new LambdaUpdateWrapper<Article>()
                         .set(Article::getIsIllegal, yes ? 1 : 0)
-                        .eq(Article::getId, id));
+                        .eq(Article::getId, one.getTargetId()));
                 break;
             case "评论":
                 iCommentService.update(new LambdaUpdateWrapper<Comment>()
                         .set(Comment::getIsIllegal, yes ? 1 : 0)
-                        .eq(Comment::getId, id));
+                        .eq(Comment::getId, one.getTargetId()));
                 break;
         }
 
