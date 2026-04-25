@@ -2,14 +2,16 @@ package com.bird_forum.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.bird_forum.context.ThreadContext;
 import com.bird_forum.domain.ResponseData;
 import com.bird_forum.domain.dto.ReportDTO;
 import com.bird_forum.domain.po.Report;
+import com.bird_forum.domain.po.ReportReason;
 import com.bird_forum.domain.po.User;
 import com.bird_forum.domain.query.ReportQuery;
 import com.bird_forum.domain.vo.ReportVO;
+import com.bird_forum.service.IReportReasonService;
 import com.bird_forum.service.IReportService;
 import com.bird_forum.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +37,9 @@ import java.util.List;
 public class ReportController {
     @Resource
     private IReportService iReportService;
+
+    @Resource
+    private IReportReasonService iReportReasonService;
 
     @Resource
     private IUserService iUserService;
@@ -131,7 +136,16 @@ public class ReportController {
         log.info("查询举报: {}", id);
 
         ReportVO res = BeanUtil.copyProperties(iReportService.getById(id), ReportVO.class);
-        res.setReporterName(iUserService.getOne(new LambdaQueryWrapper<User>().eq(User::getId, res.getReporterId())).getUsername());
+        ReportReason reportReason = iReportReasonService.getById(res.getReasonId());
+        res.setReason(reportReason.getContext());
+
+        User user = iUserService.getOne(new LambdaQueryWrapper<User>().eq(User::getId, res.getReporterId()));
+
+        if (ObjectUtil.isNotNull(user)) {
+            res.setReporterName(user.getUsername());
+        } else {
+            res.setReporterName("该用户已注销");
+        }
 
         return ResponseData.success(res);
     }

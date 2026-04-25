@@ -44,13 +44,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
      * @return 添加结果
      */
     @Override
-    public Boolean addComment(CommentDTO commentDTO) {
+    public Long addComment(CommentDTO commentDTO) {
         Comment comment = BeanUtil.copyProperties(commentDTO, Comment.class);
         System.out.println(comment);
         // 设置创建时间为当前时间
         comment.setCreateTime(LocalDateTime.now());
 
-        return save(comment);
+        save(comment);
+
+        return comment.getId();
     }
 
     /**
@@ -67,9 +69,18 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
             // 设置头像URL和点赞状态
             data.forEach(commentVO -> {
-                commentVO.setAvatar(MinioUtils.getFileUrl(commentVO.getAvatar()));
+                if (commentVO.getAvatar() != null) {
+                    commentVO.setAvatar(MinioUtils.getFileUrl(commentVO.getAvatar()));
+                } else {
+                    commentVO.setAvatar(MinioUtils.getFileUrl("/avatar/default.png"));
+                    commentVO.setUserName("该用户已注销");
+                }
+
                 if (commentVO.getReplyAvatar() != null) {
                     commentVO.setReplyAvatar(MinioUtils.getFileUrl(commentVO.getReplyAvatar()));
+                } else {
+                    commentVO.setReplyAvatar(MinioUtils.getFileUrl("/avatar/default.png"));
+                    commentVO.setReplyUserName("该用户已注销");
                 }
                 commentVO.setIsLike(iCommentLikeService.isLike(commentVO.getId(), commentQuery.getUserId()));
             });
@@ -83,12 +94,16 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // 设置头像URL和点赞状态
         allComments.forEach(commentVO -> {
             if (StringUtils.isEmpty(commentVO.getAvatar())) {
-                commentVO.setAvatar(MinioUtils.getFileUrl("/avatar/error.png"));
+                commentVO.setAvatar(MinioUtils.getFileUrl("/avatar/default.png"));
                 commentVO.setUserName("该用户已注销");
             } else {
                 commentVO.setAvatar(MinioUtils.getFileUrl(commentVO.getAvatar()));
             }
-            if (commentVO.getReplyAvatar() != null) {
+
+            if (StringUtils.isEmpty(commentVO.getReplyAvatar())) {
+                commentVO.setReplyAvatar(MinioUtils.getFileUrl("/avatar/default.png"));
+                commentVO.setReplyUserName("该用户已注销");
+            } else {
                 commentVO.setReplyAvatar(MinioUtils.getFileUrl(commentVO.getReplyAvatar()));
             }
             commentVO.setIsLike(iCommentLikeService.isLike(commentVO.getId(), commentQuery.getUserId()));

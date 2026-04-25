@@ -17,7 +17,7 @@ import java.util.Date;
 public class NoticeVO implements Serializable {
     
     @Schema(description = "通知id")
-    private Long id;
+    private String id;
     
     @Schema(description = "标题")
     private String title;

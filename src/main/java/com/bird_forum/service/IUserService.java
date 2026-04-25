@@ -47,5 +47,5 @@ public interface IUserService extends IService<User> {
      * @param userId 用户id
      * @return 用户详情
      */
-    UserVO getUserDetail(Long userId);
+    UserVO getUserDetail(Long userId, Long currentUserId);
 }

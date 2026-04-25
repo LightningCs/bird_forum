@@ -51,6 +51,9 @@ public class Report implements Serializable {
     @Schema(description = "状态")
     private String status;
 
+    @Schema(description = "审核结果(0-不违规, 1-违规)")
+    private Integer result;
+
     @Schema(description = "备注")
     private String remark;
 

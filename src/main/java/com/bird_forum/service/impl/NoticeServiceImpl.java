@@ -57,7 +57,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice>
             List<NoticeRead> noticeReads = iNoticeReadService.list(queryWrapper);
             
             // 构建通知ID到已读状态的映射
-            Map<Long, String> readMap = noticeReads.stream()
+            Map<String, String> readMap = noticeReads.stream()
                 .collect(Collectors.toMap(NoticeRead::getNoticeId, NoticeRead::getIsRead, (o1, o2) -> o1));
             
             // 设置已读状态

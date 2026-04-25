@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "通知已读情况")
 public class NoticeRead {
     @Schema(description = "通知id")
-    private Long noticeId;
+    private String noticeId;
 
     @Schema(description = "用户id")
     private Long userId;

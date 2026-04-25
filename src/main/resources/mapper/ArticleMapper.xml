@@ -31,8 +31,19 @@
             <if test="violationStatus != null and violationStatus != ''">
                 and a.is_illegal = #{violationStatus}
             </if>
-            <if test="status != null and status != ''">
-                and a.status = #{status}
+            <if test="status != null">
+                and a.status =
+                    <choose>
+                        <when test="status == 0">
+                            '草稿'
+                        </when>
+                        <when test="status == 1">
+                            '已发布'
+                        </when>
+                        <otherwise>
+                            '不可见'
+                        </otherwise>
+                    </choose>
             </if>
         </where>
         order by a.create_time desc, a.like_num desc

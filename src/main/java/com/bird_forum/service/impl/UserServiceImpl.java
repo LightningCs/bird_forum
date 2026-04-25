@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bird_forum.util.EncryptUtils;
 import com.bird_forum.util.JWTUtils;
 import com.bird_forum.util.MinioUtils;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -170,7 +171,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .list(userQuery.toPage());
 
         users.forEach(user -> {
-            user.setAvatar(MinioUtils.getFileUrl(user.getAvatar()));
+            if (StringUtils.isNotEmpty(user.getAvatar())) {
+                user.setAvatar(MinioUtils.getFileUrl(user.getAvatar()));
+            } else {
+                user.setAvatar(MinioUtils.getFileUrl("/avatar/default.png"));
+            }
         });
         users = users.subList((userQuery.getPageNo() - 1) * userQuery.getPageSize(), Math.min(userQuery.getPageNo() * userQuery.getPageSize(), users.size()));
 
@@ -226,7 +231,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * @return 用户详情
      */
     @Override
-    public UserVO getUserDetail(Long userId) {
+    public UserVO getUserDetail(Long userId, Long currentUserId) {
         // 查询用户基本信息
         User user = getById(userId);
         if (user == null) {
@@ -239,9 +244,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
-
-        // 获取当前登录用户ID
-        Long currentUserId = ThreadContext.get();
 
         // 如果是当前用户，isFollowed为null
         if (ObjectUtil.isNotNull(currentUserId) && currentUserId.equals(userId)) {

@@ -137,12 +137,12 @@ public class UserController {
      * @param userId 用户id
      * @return 响应数据
      */
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/{currentUserId}")
     @Operation(summary = "获取用户详情", description = "获取用户详情", method = "GET")
-    public ResponseData<UserVO> getUserDetail(@PathVariable Long userId) {
+    public ResponseData<UserVO> getUserDetail(@PathVariable Long userId, @PathVariable Long currentUserId) {
         log.info("获取用户详情, userId:{}", userId);
 
-        return ResponseData.success(userService.getUserDetail(userId));
+        return ResponseData.success(userService.getUserDetail(userId, currentUserId));
     }
 
     @DeleteMapping("/batch")

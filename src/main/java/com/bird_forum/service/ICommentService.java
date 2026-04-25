@@ -24,7 +24,7 @@ public interface ICommentService extends IService<Comment> {
      * @param commentDTO 评论DTO
      * @return 添加结果
      */
-    Boolean addComment(CommentDTO commentDTO);
+    Long addComment(CommentDTO commentDTO);
 
     /**
      * 获取文章的评论

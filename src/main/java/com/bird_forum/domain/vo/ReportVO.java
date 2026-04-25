@@ -1,5 +1,6 @@
 package com.bird_forum.domain.vo;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -37,6 +38,9 @@ public class ReportVO implements Serializable {
     @Schema(description = "举报理由id")
     private Long reasonId;
 
+    @Schema(description = "举报理由")
+    private String reason;
+
     @Schema(description = "目标类型")
     private String targetType;
 
@@ -48,6 +52,9 @@ public class ReportVO implements Serializable {
 
     @Schema(description = "状态")
     private String status;
+
+    @Schema(description = "审核结果")
+    private Integer result;
 
     @Schema(description = "备注")
     private String remark;

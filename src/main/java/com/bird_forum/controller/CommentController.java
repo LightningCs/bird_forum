@@ -1,6 +1,7 @@
 package com.bird_forum.controller;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.bird_forum.context.ThreadContext;
@@ -46,9 +47,11 @@ public class CommentController {
     public ResponseData addComment(@RequestBody CommentDTO commentDTO) {
         log.info("添加评论:{}", commentDTO);
 
+        Long id = iCommentService.addComment(commentDTO);
+
         // 添加评论成功
-        if (iCommentService.addComment(commentDTO)) {
-            return ResponseData.success();
+        if (ObjectUtil.isNotNull(id)) {
+            return ResponseData.success(id);
         }
 
         // 失败

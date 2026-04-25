@@ -3,8 +3,8 @@
 <mapper namespace="com.bird_forum.mapper.ReportMapper">
 
     <select id="list" resultType="com.bird_forum.domain.vo.ReportVO">
-        select t1.*, t2.username as `reporter_name` from `report` as t1 left join `user` as t2
-        on t1.reporter_id = t2.id
+        select t1.*, t2.username as `reporter_name`, t3.context as `reason` from `report` as t1 left join `user` as t2
+        on t1.reporter_id = t2.id left join `report_reason` as t3 on t1.reason_id = t3.id
         <where>
             <if test="reporter != null and reporter != ''">
                 and t2.username like concat('%', #{reporter}, '%')

@@ -63,12 +63,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 设置图片和作者头像的url
         articles.forEach(item -> {
             item.setImage(MinioUtils.getFileUrl(item.getImage()));
+
             if (StringUtils.isEmpty(item.getAvatar())) {
                 item.setPublisherName("该用户已注销");
                 item.setAvatar(MinioUtils.getFileUrl("/avatar/error.png"));
             } else {
                 item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
             }
+
             setData(item);
         });
 
@@ -104,12 +106,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
         articles.forEach(item -> {
             item.setImage(MinioUtils.getFileUrl(item.getImage()));
+
             if (StringUtils.isEmpty(item.getAvatar())) {
                 item.setPublisherName("该用户已注销");
                 item.setAvatar(MinioUtils.getFileUrl("/avatar/error.png"));
             } else {
                 item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
             }
+
             setData(item);
         });
 
@@ -199,7 +203,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<ArticleVO> articles = articleMapper.listByPublisher(userId);
         articles.forEach(item -> {
             item.setImage(MinioUtils.getFileUrl(item.getImage()));
-            item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
+
+            if (StringUtils.isEmpty(item.getAvatar())) {
+                item.setAvatar("/avatar/error.png");
+            } else {
+                item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
+            }
+
             setData(item);
         });
         return articles;
@@ -216,7 +226,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<ArticleVO> articles = articleMapper.listCollected(userId);
         articles.forEach(item -> {
             item.setImage(MinioUtils.getFileUrl(item.getImage()));
-            item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
+
+            if (StringUtils.isEmpty(item.getAvatar())) {
+                item.setAvatar("/avatar/error.png");
+            } else {
+                item.setAvatar(MinioUtils.getFileUrl(item.getAvatar()));
+            }
+
             setData(item);
         });
         return articles;
